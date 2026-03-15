@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://cuio3iu2hwcgg"]
+
+[ext_resource type="Script" path="res://AudioStreamPlayer.gd" id="1_4e170"]
+[ext_resource type="Script" path="res://Camera2D.gd" id="2_11vck"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wduky"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="AudioStreamPlayer" type="Area2D" parent="."]
+script = ExtResource("1_4e170")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AudioStreamPlayer"]
+shape = SubResource("RectangleShape2D_wduky")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("2_11vck")

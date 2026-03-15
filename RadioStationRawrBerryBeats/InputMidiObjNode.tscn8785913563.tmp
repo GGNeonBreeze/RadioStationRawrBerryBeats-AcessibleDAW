@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://cuio3iu2hwcgg"]
+
+[ext_resource type="Script" uid="uid://hrlkgc0e25pf" path="res://AudioStreamPlayer.gd" id="1_4e170"]
+[ext_resource type="Script" uid="uid://bmdw1d7m0hjb7" path="res://Camera2D.gd" id="2_11vck"]
+[ext_resource type="AudioStream" uid="uid://cfq0a1d2cg3if" path="res://02 - 2 Mello - I Wanna Kno.mp3" id="3_6mdfk"]
+[ext_resource type="Texture2D" uid="uid://cfwd1j051a6n8" path="res://lesgoo2.png" id="3_bpd8e"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wduky"]
+size = Vector2(1, 646)
+
+[node name="Node2D" type="Node2D"]
+
+[node name="AudioStreamPlayer" type="Area2D" parent="."]
+script = ExtResource("1_4e170")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AudioStreamPlayer"]
+position = Vector2(0.5, -1)
+shape = SubResource("RectangleShape2D_wduky")
+
+[node name="Sprite2D" type="Sprite2D" parent="AudioStreamPlayer"]
+texture = ExtResource("3_bpd8e")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="AudioStreamPlayer"]
+stream = ExtResource("3_6mdfk")
+volume_db = -33.016
+
+[node name="Camera2D" type="Camera2D" parent="AudioStreamPlayer"]
+zoom = Vector2(0.05, 0.05)
+script = ExtResource("2_11vck")
+
+[node name="LineEdit" type="LineEdit" parent="AudioStreamPlayer"]
+offset_right = 68.5625
+offset_bottom = 31.0
+
+[node name="MenuBar" type="MenuBar" parent="AudioStreamPlayer"]
+offset_right = 40.0
+offset_bottom = 40.0
