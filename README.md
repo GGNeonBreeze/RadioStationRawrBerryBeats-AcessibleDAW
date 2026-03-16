@@ -63,6 +63,9 @@ I am new to opensource projects and git hub as a whole so feel free to make some
 - If you refrence something (website, book, video, etc.) please also credit those (no need to be super formal, but some link or means of letting someone find the original piece helps with the above).
 - Because of the policy above, while you technically can do whatever you want with your own code we are not planning on having AI generated code in the main branch. This is because tbh I don't know the full legal and computational specifics on it, and like giving people agency with what they make/code (that's kinda the whole point of this project in the first place).
 
+#Contact
+Still setting this up fully for a couple of reasons, and am down for suggestions on what works best for open source project, but for now just use github (create issues to suggest features). Will have a more organized way to allow for contact later.
+
 #Credits
 (feel free to add your name here if you pull/make your own copy, if you get added to the main branch you will also be added here)
 Programmers, Artists, contributors of any kind for this project directly
