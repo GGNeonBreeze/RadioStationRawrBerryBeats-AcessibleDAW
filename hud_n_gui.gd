@@ -235,7 +235,7 @@ func _ready():
 		#var checkFirstInputEvents = InputEventKey.new()
 		var actionShortcut = InputEventKey.new()
 
-		for ii in range(40):
+		for ii in range(53):
 			# check each of the actions (these are the ones defined at the
 			# start of the project, changed from the godot menu/read from
 			# the settings save file (when thats added, not rn))
