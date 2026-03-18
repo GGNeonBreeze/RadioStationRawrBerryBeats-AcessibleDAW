@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://b4vhvu8e82v"]
+
+[ext_resource type="Script" uid="uid://c4ethfws0mpxj" path="res://Note.gd" id="1_872nq"]
+[ext_resource type="Texture2D" uid="uid://ds5askm0cgb4h" path="res://Assets/Sprites/IconSprites/MusicMakerNoteReal.png" id="2_6st8q"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ewwcu"]
+size = Vector2(1, 5)
+
+[node name="Node2D" type="Area2D"]
+script = ExtResource("1_872nq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ewwcu")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_6st8q")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
