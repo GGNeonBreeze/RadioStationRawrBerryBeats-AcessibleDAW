@@ -54,7 +54,7 @@ I mentioned above that I'd love to see other's takes on something like this and 
 - Since it's open source it is free and light weight (it works on my nearly 10 year old laptop) so more folks should be able to run it (you can download it here: https://godotengine.org/)
 
 # License
-We are using GPL 3 which the long story short of for this project means you are allowed to copy the code, make your own additions, and even sell it, but you can't prevent someone else from doing the same. This also means that if there is any sort of damage caused by the program or any programs that branch from this main project, creators are not liable for the damages. But that's just a tldr, you can read over the whole license here:
+We are using MIT which the long story short of for this project means you are allowed to copy the code, make your own additions, and even sell it. This also means that if there is any sort of damage caused by the program or any programs that branch from this main project, creators are not liable for the damages. But that's just a tldr, you can read over the whole license in LICENSE.txt and throughout the internet.
 
 # General Code Policy (comments, expectations, ai, etc.)
 I am new to opensource projects and git hub as a whole so feel free to make some suggestions as to how the project should operate, but right now if you want to add on to the code feel free to make a new branch with whatever additions you want. 
