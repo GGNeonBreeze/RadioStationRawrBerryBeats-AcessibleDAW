@@ -51,7 +51,7 @@ I mentioned above that I'd love to see other's takes on something like this and 
 - game engines in general have a lot of built ins that can/have already helped (Godot in particular already had support for midi keyboard devices which is awesome, this can also help with loading up the project on different operating systems including mobile)
 - As of 2025 Godot has screen reader support (https://godotengine.org/article/dev-snapshot-godot-4-5-dev-3/)
 - Godot is also open source so if we need to edit it specifically for this project we can
-- Since it's open source it is free and light weight (it works on my nearly 10 year old laptop) so more folks should be able to run it
+- Since it's open source it is free and light weight (it works on my nearly 10 year old laptop) so more folks should be able to run it (you can download it here: https://godotengine.org/)
 
 # License
 We are using GPL 3 which the long story short of for this project means you are allowed to copy the code, make your own additions, and even sell it, but you can't prevent someone else from doing the same. This also means that if there is any sort of damage caused by the program or any programs that branch from this main project, creators are not liable for the damages. But that's just a tldr, you can read over the whole license here:
@@ -72,16 +72,7 @@ Programmers, Artists, contributors of any kind for this project directly
 - NeonBreeze
 Refrences for code
 - Godot documentation (for audio capture, and a general idea for how the engine works):
-            https://docs.godotengine.org/en/stable/classes/class_inputeventmidi.html
-			https://docs.godotengine.org/en/stable/classes/class_audioeffectcapture.html
-			https://docs.godotengine.org/en/stable/classes/class_audiostreamwav.html
-			https://docs.godotengine.org/en/stable/classes/class_audioeffectrecord.html#class-audioeffectrecord
-			https://docs.godotengine.org/en/stable/tutorials/best_practices/data_preferences.html
-			https://docs.godotengine.org/en/stable/classes/class_dictionary.html
-		    https://docs.godotengine.org/en/stable/classes/class_string.html#class-string-method-num-int64
-            https://docs.godotengine.org/en/stable/classes/class_inputeventmousebutton.html
-  	        https://docs.godotengine.org/en/stable/classes/class_canvasitem.html#class-canvasitem-property-modulate
-            https://docs.godotengine.org/en/stable/classes/class_audiostreamgenerator.html
+https://docs.godotengine.org/en/latest/
 - delta time calc comes from here (Craig Stuart Sapp):
 			https://www.ccarh.org/courses/253/handout/vlv/
 - understanding the midi formatting comes from here (The Sonic Spot Founded by Mitch Bechtel, also shoutouts to the internet archive/wayback machine for this link):
