@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://brxx7076i1jph" path="res://Assets/Sprites/PlayingSprites/rawr1.png" id="4_25h5o"]
 [ext_resource type="Texture2D" uid="uid://bvl1a38qoixc2" path="res://Assets/Sprites/PlayingSprites/rawr3.png" id="5_sfosx"]
 [ext_resource type="Texture2D" uid="uid://ds5askm0cgb4h" path="res://Assets/Sprites/IconSprites/MusicMakerNoteReal.png" id="9_25h5o"]
-[ext_resource type="Script" uid="uid://dyg08le6swk18" path="res://hud_n_gui.gd" id="10_sfosx"]
+[ext_resource type="Script" uid="uid://dyg08le6swk18" path="res://HUDnGUI.gd" id="10_sfosx"]
 [ext_resource type="Script" uid="uid://1cuxqu4u3ryb" path="res://audio_stream_player.gd" id="11_uhv00"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wduky"]
