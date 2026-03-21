@@ -168,7 +168,7 @@ func _ready():
 # three vals represents the rbg for each track
 @onready var TrackColors = [0,1,1, 0.188,0.188,0.812 ,0.25,0.45,0 ,0.6,0.1,0.8 ,0.6,0.8,0, 0.24,0.1,0.98]
 # this controls the volume of each track
-@onready var TrackVolume = [-19.0]
+@onready var TrackVolume = [-4.0]
 
 # selector
 
@@ -214,7 +214,7 @@ func _ready():
 @onready var countKeysForDebugVar : int = 0;
 # this loads a dummy texture (just a blank one) for various clean up 
 # stuff (namely to remove the previous input's icon when u remap)
-@onready var invisibleLoad = Image.load_from_file( "invisiblegrapes.png" )
+@onready var invisibleLoad = Image.load_from_file( "res://Assets/Sprites/IconSprites/invisiblegrapes.png" )
 @onready var invisibleGrapes = ImageTexture.create_from_image(invisibleLoad)
 						
 
@@ -410,6 +410,10 @@ func _input(musician_input):
 					inMenu = false;
 					remappingActions = false;
 		
+		
+		# [bug] Want to find a more permanent fix for making it so 
+		# this iterate doesn't have to be manually changed with each  update to Godot that adds new default inputs (this for loop iterate
+		# through the custom inputs used by this project)
 		# ~ one known bug is newer versions of godot change the amount of
 		# default inputs so if you try to make the project in a newer version
 		# this will mess with a couple of things regarding the GUI buttons
@@ -555,7 +559,7 @@ func _process(delta):
 								MidiNotes[MidiNotes.size() - 1].append(null);
 						
 						# if there is a file name then load it
-						# ~ p sure this is bugged I def messed up the indexes
+						# ~ [bug] p sure this is bugged I def messed up the indexes
 						# but am focuing on other proof of concept stuff rn
 						if FileAsString[i] != "":
 							# this saves the files for each track
@@ -596,7 +600,7 @@ func _process(delta):
 			# store notes into chunk array) and when the playing bar is close to the next chunk it starts
 			# loading notes for that chunk (might be nice for optimizing too)
 		
-		# ~ if files are not loading correctly its prob b/c the weebit string
+		# ~ [bug] if files are not loading correctly its prob b/c the weebit string
 		# is not splitting at the right spot (p sure this should be right for my files)
 		# but might require some more manual checks for midis esp with their headers)
 		# said in a comment above, but not every midi file is gauranteed to work
@@ -690,7 +694,7 @@ func _process(delta):
 
 							toAdd += calcingTime
 							
-					# ~ not super fixating on this rn, but p sure this is where
+					# ~ [bug] not super fixating on this rn, but p sure this is where
 					# there is a rounding problem with saving to files (the debating
 					# test midi's first 5 delta times are 83d51b 8549 0 9059 8232 
 					# while when saving them they are 83d51b 8549 0 9059 8231
@@ -766,7 +770,7 @@ func _process(delta):
 							a_note.noteColor = Color(TrackColors[( a_note.track * 3 ) % TrackColors.size()], TrackColors[( (a_note.track * 3) + 1 ) % TrackColors.size()], TrackColors[( (a_note.track * 3) + 2 ) % TrackColors.size()])							
 
 							
-							# ~ (marking b/c not formally tested) gonna try volume stuff again here, for now making it so
+							# ~ [bug] (marking b/c not formally tested) gonna try volume stuff again here, for now making it so
 							# FF = 0 and 00 = -19 (so midis can just have 1 as the volume
 							# as their velocities by default are going to be 00 cuz thats
 							# what I'm reading this as for now)
@@ -813,7 +817,7 @@ func _process(delta):
 						# previous track chunk ended also gets set  here
 						LastTrackEventEndedHere = iterMidi
 						
-					# ~ (makring b/c not formally tested) same idea as above but for different sized events (both of these
+					# ~ [feature/bug] (makring b/c not formally tested) same idea as above but for different sized events (both of these
 					# will have more when we add these events, rn it just tries to 
 					# skip them both and read the notes
 					elif TopTenChars[2] == "d" || TopTenChars[2] == "c":
@@ -846,7 +850,7 @@ func _process(delta):
 
 			# lets the notes know they can play now
 			
-			# ~ bug here where if u ctrl a and delete a track's notes and
+			# ~ [bug] bug here where if u ctrl a and delete a track's notes and
 			# then try loading stuff to the track it gets all messed up (think
 			# its from the child nodes being deleted, but not being removed from 
 			# the array
@@ -981,7 +985,7 @@ func _process(delta):
 			print(recordToFile)
 			recordToFile.set_recording_active(true)	
 		# pressing exit stops the wav recording and you can enter in 
-		# a file name to save it ... ~ want to eventually make it so combing
+		# a file name to save it ... ~ [feature] want to eventually make it so combing
 		# through and recording audio is an option, but also want to 
 		# make it so you can just write to a file without having to iterate through
 		# the audio and instead just have the code iterate through the
@@ -1412,7 +1416,7 @@ func _process(delta):
 
 		# this increases the x of a note by the value typed into the bottom right
 		
-		# ~ this kinda works, but u have to do select, then set the value with MoveTo
+		# ~ [feature] this kinda works, but u have to do select, then set the value with MoveTo
 		# tho pressing esc removes focus, but not actually and u can't type again unless
 		# u press enter again (want to see if we can mess around with getting focus
 		# so that u dont have to press those specific buttons). leaving this for 
@@ -1634,7 +1638,7 @@ func _process(delta):
 					transpose = 1
 
 
-	# ~ one bug to patch whith this is when u use the selector after playing
+	# ~ [bug] one bug to patch whith this is when u use the selector after playing
 	# a bit it becomes offset and thats no good (also consider adding
 	# a way to change the length of a note that has been selected thats 
 	# semi important, but tbf not necessarily necessary rn)
