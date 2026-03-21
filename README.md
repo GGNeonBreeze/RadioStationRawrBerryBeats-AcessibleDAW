@@ -69,6 +69,9 @@ I am new to opensource projects and git hub as a whole so feel free to make some
 - If you refrence something (website, book, video, etc.) please also credit those (no need to be super formal, but some link or means of letting someone find the original piece helps with the above).
 - Because of the policy above, while you technically can do whatever you want with your own code we are not planning on having AI generated code in the main branch. This is because tbh I don't know the full legal and computational specifics on it, and like giving people agency with what they make/code (that's kinda the whole point of this project in the first place).
 - When writing issues they don't have to be super formal, but make it so someone can copy and paste and ctrl + f the first line of the issue so people can know where to look in the code for the bug (if it is something that can be directly refrenced in the code) as opposed to typing which line it is on, also include which file the bug is in. This is because sometimes the exact line number can get messed up.
+- "_functionName": Underscore before name in camel case (with function calls as "_functionName()")
+- "NodeName": First char of each word is uppercase (with the script for that node sharing the name but having .gd at the end, i.e. "NodeName.gd")
+- "variableName": camel case, no underscore
 
 #Contact
 Still setting this up fully for a couple of reasons, and am down for suggestions on what works best for open source project, but for now just use github (create issues to suggest features). Will have a more organized way to allow for contact later.
