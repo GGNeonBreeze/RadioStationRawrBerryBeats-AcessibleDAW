@@ -1,0 +1,2 @@
+*.import # ignores all imports (afaik Godot doesn't need this when push/pull from git)
+.godot/ # ignores the .godot folder (this should be automatically made if you load the project through the Godot program)
