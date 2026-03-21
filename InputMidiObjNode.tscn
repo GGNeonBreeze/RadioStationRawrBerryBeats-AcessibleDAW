@@ -99,13 +99,13 @@ offset_right = -631.438
 offset_bottom = -119.0
 focus_next = NodePath("../MoveTo")
 
-[node name="the_selector" type="Area2D" parent="PlayingNode"]
+[node name="TheSelector" type="Area2D" parent="PlayingNode"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayingNode/the_selector"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayingNode/TheSelector"]
 modulate = Color(0.788041, 0.467953, 0.76401, 1)
 shape = SubResource("RectangleShape2D_xs51f")
 
-[node name="Sprite2D" type="Sprite2D" parent="PlayingNode/the_selector"]
+[node name="Sprite2D" type="Sprite2D" parent="PlayingNode/TheSelector"]
 self_modulate = Color(0.788235, 0.466667, 0.764706, 0.439216)
 scale = Vector2(1, 0.2)
 texture = ExtResource("9_25h5o")
