@@ -66,11 +66,11 @@ func _ready():
 	# get the playing bar in it, as well as not making it detectable
 	# in other collision layers)
 	# what the selector is checking for
-	$the_selector.set_collision_mask_value(2, true) 
+	$TheSelector.set_collision_mask_value(2, true) 
 	# what layer the selector is on
-	$the_selector.set_collision_layer_value(3, true) 	
+	$TheSelector.set_collision_layer_value(3, true) 	
 	# removes the selector from the first layer
-	$the_selector.set_collision_layer_value(1, false) 
+	$TheSelector.set_collision_layer_value(1, false) 
 	
 
 	
@@ -1375,17 +1375,17 @@ func _process(delta):
 		if Input.is_action_pressed("LeftClick"):
 			# x pos (takes where u first click an extends it to current mouse pos)
 			var selectLengthX = -(StartXSelectCorner - get_global_mouse_position().x)
-			$the_selector.scale.x = selectLengthX
-			$the_selector.global_position.x = StartXSelectCorner + (selectLengthX / 2)
-			replaySelect = $the_selector.global_position.x - ($the_selector.scale.x / 2);
+			$TheSelector.scale.x = selectLengthX
+			$TheSelector.global_position.x = StartXSelectCorner + (selectLengthX / 2)
+			replaySelect = $TheSelector.global_position.x - ($TheSelector.scale.x / 2);
 			# same as above but for y
 			var selectLengthY = (StartYSelectCorner - get_global_mouse_position().y)
-			$the_selector.scale.y = selectLengthY
-			$the_selector.global_position.y = StartYSelectCorner - (selectLengthY / 2)
+			$TheSelector.scale.y = selectLengthY
+			$TheSelector.global_position.y = StartYSelectCorner - (selectLengthY / 2)
 		
 		# when u just let go, all of the colliding notes get selected
 		if Input.is_action_just_released("LeftClick"):
-			for collidNotes in $the_selector.get_overlapping_areas():
+			for collidNotes in $TheSelector.get_overlapping_areas():
 				# this iterates through the notes colliding with the
 				# selection box and appends them to the selected array
 				if collidNotes is NoteClass && collidNotes.track == currentTrack:	
@@ -1406,10 +1406,10 @@ func _process(delta):
 		if Input.is_action_just_pressed("SelectAdjustAction"):
 			if !adjustingSelector:
 				selNotes.clear()
-				$the_selector.scale.x = 16;		
-				$the_selector.global_position.x = global_position.x;
-				$the_selector.scale.y = 16;		
-				$the_selector.global_position.y = global_position.y;
+				$TheSelector.scale.x = 16;		
+				$TheSelector.global_position.x = global_position.x;
+				$TheSelector.scale.y = 16;		
+				$TheSelector.global_position.y = global_position.y;
 			
 			adjustingSelector = not adjustingSelector
 			inMenu = adjustingSelector
@@ -1456,17 +1456,17 @@ func _process(delta):
 		# the positions quicker (by typing in values) with quick adjust
 		if adjustingSelector == true:
 			if Input.is_action_pressed("LeftAction"):	
-				$the_selector.scale.x += 2;		
-				$the_selector.global_position.x -= 1;
+				$TheSelector.scale.x += 2;		
+				$TheSelector.global_position.x -= 1;
 			if Input.is_action_pressed("RightAction"):			
-				$the_selector.scale.x += 2;	
-				$the_selector.global_position.x += 1;
+				$TheSelector.scale.x += 2;	
+				$TheSelector.global_position.x += 1;
 			if Input.is_action_pressed("UpAction"):			
-				$the_selector.scale.y -= 2;	
-				$the_selector.global_position.y -= 1;
+				$TheSelector.scale.y -= 2;	
+				$TheSelector.global_position.y -= 1;
 			if Input.is_action_pressed("DownAction"):			
-				$the_selector.scale.y -= 2;	
-				$the_selector.global_position.y += 1;
+				$TheSelector.scale.y -= 2;	
+				$TheSelector.global_position.y += 1;
 			
 			# this is where u can type each of the coordinate values (if u press record
 			# u can enter in a start time and end time and lower and higher pitch
@@ -1482,27 +1482,27 @@ func _process(delta):
 				
 				if dimensionIterator == 0:
 					# first value typed is the starting time
-					#selectDifference = $the_selector.global_position.x - int($EnterSelectDimensions.text);
+					#selectDifference = $TheSelector.global_position.x - int($EnterSelectDimensions.text);
 					selectDifference = int($EnterSelectDimensions.text);					
-					$the_selector.global_position.x = selectDifference;
+					$TheSelector.global_position.x = selectDifference;
 
 				if dimensionIterator == 1:
 					# second value typed is the starting time
-					selectDifference = int($EnterSelectDimensions.text) - $the_selector.global_position.x;
-					$the_selector.global_position.x = (selectDifference / 2) + $the_selector.global_position.x;
-					$the_selector.scale.x = selectDifference;
+					selectDifference = int($EnterSelectDimensions.text) - $TheSelector.global_position.x;
+					$TheSelector.global_position.x = (selectDifference / 2) + $TheSelector.global_position.x;
+					$TheSelector.scale.x = selectDifference;
 					
 				if dimensionIterator == 2:				
 					# third value typed is the lower pitch (unless I messed up this calc lol)			
 					selectDifference = int($EnterSelectDimensions.text);					
-					$the_selector.global_position.y = selectDifference;
+					$TheSelector.global_position.y = selectDifference;
 
 
 				if dimensionIterator == 3:
 					# fourth value typed is the lower pitch (unless I messed up this calc lol)
-					selectDifference = int($EnterSelectDimensions.text) - $the_selector.global_position.y;
-					$the_selector.global_position.y = selectDifference;
-					$the_selector.scale.y = -2 * selectDifference;	
+					selectDifference = int($EnterSelectDimensions.text) - $TheSelector.global_position.y;
+					$TheSelector.global_position.y = selectDifference;
+					$TheSelector.scale.y = -2 * selectDifference;	
 				
 				
 				dimensionIterator += 1;
@@ -1518,17 +1518,17 @@ func _process(delta):
 			# left click above, but for the keys)
 			if Input.is_action_just_released("LeftAction") || Input.is_action_just_released("RightAction") || Input.is_action_just_released("DownAction") || Input.is_action_just_released("UpAction") || dimensionIterator >= 4:
 				dimensionIterator = 0;
-				for collidNotes in $the_selector.get_overlapping_areas():
+				for collidNotes in $TheSelector.get_overlapping_areas():
 					if !(collidNotes in selNotes) && collidNotes is NoteClass && collidNotes.track == currentTrack:		
 						selNotes.append(collidNotes)	
 				
 				
 		
 		# this is the code that replays the notes that are currently select
-		if replaySelect > $the_selector.global_position.x + ($the_selector.scale.x / 2):
-			replaySelect = $the_selector.global_position.x - ($the_selector.scale.x / 2);
+		if replaySelect > $TheSelector.global_position.x + ($TheSelector.scale.x / 2):
+			replaySelect = $TheSelector.global_position.x - ($TheSelector.scale.x / 2);
 		replaySelect += PlayBackSpeed;
-		$the_selector.get_node("Sprite2D").global_position.x = replaySelect
+		$TheSelector.get_node("Sprite2D").global_position.x = replaySelect
 		
 		
 	# if your not in a menu then pressing different buttons will change
