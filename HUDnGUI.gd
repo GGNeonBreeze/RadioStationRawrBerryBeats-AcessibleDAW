@@ -32,7 +32,7 @@ extends Area2D
 	# (this method gives u the most amount of keys to use, while making
 	# it easy for me to add more keyboards later)
 	
-	# ~ slight update on this, godot don't work with adding action's
+	# ~ [bug] slight update on this, godot don't work with adding action's
 	# directions durring run time (leaving this comment here to remind
 	# myself to report, and the map that obeys what is described above
 	# is at the bottom of this file, using a different map for now
@@ -222,7 +222,7 @@ func _ready():
 		# default textures are invisible unless assigned to an action
 		# (described below on start up, and in the remapping code in 
 		# the PlayingNote script)
-		var image = Image.load_from_file("res://invisiblegrapes.png")
+		var image = Image.load_from_file("Assets/Sprites/IconSprites/invisiblegrapes.png")
 		# this stores the text (a bit below) for each of the keys
 		# to tell the computer what to draw (for each input)
 		var buttonText = ""
@@ -235,6 +235,10 @@ func _ready():
 		#var checkFirstInputEvents = InputEventKey.new()
 		var actionShortcut = InputEventKey.new()
 
+		# ~ [bug] Want to find a more permanent fix for making it so 
+		# this iterate doesn't have to be manually changed with each 
+		# update to Godot that adds new default inputs (this for loop iterate
+		# through the custom inputs used by this project)
 		for ii in range(53):
 			# check each of the actions (these are the ones defined at the
 			# start of the project, changed from the godot menu/read from
@@ -330,7 +334,7 @@ func _ready():
 		
 		focusButton.global_position.x = hudTest.global_position.x
 		focusButton.global_position.y = hudTest.global_position.y 
-		# ` ~ would like some option to make buttons invisible when they arent
+		# ` ~ [feature] would like some option to make buttons invisible when they arent
 		# being used since obv it makes the screen look more busy (this was
 		# also just test text to see that every button was being put on screen)
 		focusButton.text = "test"
