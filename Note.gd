@@ -258,7 +258,7 @@ func _process(delta):
 		if growing == false:
 			
 			
-			if (  (playingBar.position.x >= summonedX) && (playingBar.position.x <= summonedX + length)  ) ||   (   (playingBar.replaySelect >= summonedX) && (playingBar.replaySelect <= summonedX + length)  && (position.y < -((playingBar.get_node("the_selector").scale.y / 2) - (playingBar.get_node("the_selector").global_position.y))) && (position.y > ((playingBar.get_node("the_selector").scale.y / 2) + (playingBar.get_node("the_selector").global_position.y)) )  ):# && (pitch < playingBar.get_node("the_selector").global_position.y + playingBar.get_node("the_selector").scale.y) && (pitch > playingBar.get_node("the_selector").global_position.y)):
+			if (  (playingBar.position.x >= summonedX) && (playingBar.position.x <= summonedX + length)  ) ||   (   (playingBar.replaySelect >= summonedX) && (playingBar.replaySelect <= summonedX + length)  && (position.y < -((playingBar.get_node("TheSelector").scale.y / 2) - (playingBar.get_node("TheSelector").global_position.y))) && (position.y > ((playingBar.get_node("TheSelector").scale.y / 2) + (playingBar.get_node("TheSelector").global_position.y)) )  ):# && (pitch < playingBar.get_node("the_selector").global_position.y + playingBar.get_node("the_selector").scale.y) && (pitch > playingBar.get_node("the_selector").global_position.y)):
 				isBonking = true;
 			else: 
 				isBonking = false;
