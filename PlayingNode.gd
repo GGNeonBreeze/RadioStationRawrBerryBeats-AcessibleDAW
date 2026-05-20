@@ -1,5 +1,5 @@
 extends Area2D
-class_name PlayBar
+class_name PlayBar2
 # *Key * key ~ key ~key:
 
 # ctrl f "`" for the most recently worked on thing
@@ -109,7 +109,7 @@ func _ready():
 # this stores each of the computer keyboard values if the user is playing
 # with that keyboard
 #@onready var CompKeyboardNoteMapping = [KEY_A,KEY_W,KEY_S,KEY_E,KEY_D,KEY_F,KEY_T,KEY_G,KEY_Y,KEY_H,KEY_U,KEY_J];
-@onready var CompKeyboardNoteMapping = ["Note_C","Note_Csh","Note_D","Note_Dsh","Note_E","Note_F","Note_Fsh","Note_G","Note_Gsh","Note_A","Note_Ash","Note_B"];
+@onready var CompKeyboardNoteMapping = ["Note C","Note C Sharp","Note D","Note D Sharp","Note E","Note F","Note F Sharp","Note G","Note G Sharp","Note A","Note A Sharp","Note B"];
 
 
 
@@ -192,7 +192,7 @@ func _ready():
 
 # this is the var that lets you iterate through all of the actions 
 # for when you want to remap them
-@onready var remapIterator : int = 78
+@onready var remapIterator : int = 91
 # this bool checks if you are in the remappingActions event (you are iterating 
 # thru the actions to choose which one to remap)
 @onready var remappingActions : bool = false;
@@ -234,6 +234,7 @@ func _draw():
 	# if you are remapping actions
 	if remappingActions == true:
 		draw_string(default_font, Vector2(0, position.y + 40), str(InputMap.get_actions()[remapIterator]),0, -1, 22)
+		draw_string(default_font, Vector2(0, position.y + 60), str(remapIterator - 91),0, -1, 22)
 		
 
 # *user input (part 1, midi keyboard)
@@ -290,26 +291,7 @@ func _input(musician_input):
 	elif musician_input is InputEventKey:
 		
 		# *remap
-		
-		# ~ this is a debug thing for printing each of the details for the keys
-		# this is importatnt for drawing each of the notes themselves (explanation
-		# for this is in the HUDnGUI node btw (at the top where this syntax
-		# was copied and pasted into, ctlf "~" in HUDnGUI), altho am considering
-		# changing this to just be an array (might be a bit less optimal, but
-		# I figured if you are remapping and indexing one input at a time
-		# that it wouldn't cost that much more than a dictionary/map)
-				#if musician_input.pressed == true:
-					#print(  '"' + musician_input.as_text_physical_keycode() + " " + str( musician_input.keycode ) + " " + str( musician_input.location ) + '"' + " : " + str(countKeysForDebugVar ) + ",")
-					#print(  '"' + musician_input.as_text_physical_keycode() + '"' + " : " + str(countKeysForDebugVar ) + ",")
-					#countKeysForDebugVar += 1	
-					## bonus debug for printing all of the actions (may need to adjust)
-					## the range if more get added, also none of these have sprites set
-					#for i in range(40):
-						#print( '"' + InputMap.get_actions()[78 + i] + '"' + " : " + '"' + "___" + '"' + " ," )
-				#print( OS.get_keycode_string(musician_input.get_physical_keycode_with_modifiers()) )
-				#print( musician_input.keycode )
-			
-						
+
 		# if u press the remapping actions button it puts you in the remapping menu
 		if Input.is_action_just_pressed("Remap") && inMenu == false:
 			remappingActions = true;
@@ -319,91 +301,101 @@ func _input(musician_input):
 			# if the remappingActions is true when u have selected an input to remap, then
 			# the next input pressed remaps that action
 			if mapDisPleas == true:
-				# this iterates through each of the actions for the program
-				for i in InputMap.get_actions():
-					# if the musician iterates to the input, then they can remap it
-					if (i == InputMap.get_actions()[remapIterator]):
-						# this gets the name of the key from the previous event before it changes...
-						var prevInputKeyPart = OS.get_keycode_string(InputMap.action_get_events(InputMap.get_actions()[remapIterator])[0].get_physical_keycode_with_modifiers())
-						# .. this gets the keycode of the prev event if it changes ...
-						var prevInputKeyCode = DisplayServer.keyboard_get_keycode_from_physical(InputMap.action_get_events(InputMap.get_actions()[remapIterator])[0].physical_keycode)
-						# .. and the location of the key if it has that as a variant ..
-						var prevInputLocation = DisplayServer.keyboard_get_keycode_from_physical(InputMap.action_get_events(InputMap.get_actions()[remapIterator])[0].location)
-						# .. this combines the two to make the correct key for the input map's
-						# sprite drawing (in HUDnGUI, there are multiple keys with the same
-						# names and keycodes ex: shift or ctrl, and some that share just one
-						# but not the other "pausebreak" has the name "numlock", but both keys
-						# have different codes anyways, so we just store both for the key and
-						# also the location (for left shift n right)
-						var inputToChangeString = prevInputKeyPart# + " " + str( prevInputKeyCode ) + " " + str( prevInputLocation )
-						
-						var newInputChangeString = musician_input.as_text_physical_keycode()# + " " + str( musician_input.keycode ) + " " + str( musician_input.location )
-						
-						# this stores the key (keyboard button) for the prev action ...
-						var prevInputEventKey = InputMap.action_get_events(InputMap.get_actions()[remapIterator])[0]
-						# ... if the key that you are assinging an input to was used
-						# by another input, then the two get swapped. This is done by
-						# first finding the input (if there is one) and saving it ...
-						var prevAction = ""
-						for ii in InputMap.get_actions().size():
-							# checks if ii is greater than 78 since the first 78 actions are
-							# godot defaults, and I'm only concerned with remapping our own
-							# that the music maker uses
-							if (ii > 78) && (InputMap.action_has_event(InputMap.get_actions()[ii],musician_input) == true):
-								prevAction = InputMap.get_actions()[ii]
-						# .. if there is an action than swap it ...
-						if prevAction != "":
-							InputMap.action_erase_events(prevAction)
-							InputMap.action_add_event(prevAction,prevInputEventKey)
-						# .. regardless of if the new key was previously asigned to an
-						# action, the new key is set to the action you want to map
-						# it to
-						InputMap.action_erase_events(InputMap.get_actions()[remapIterator]);
-						InputMap.action_add_event(InputMap.get_actions()[remapIterator],musician_input)
-						
-						# this updates the visuals on the HUD n GUI
-						# this first part loads the correct texture that matches
-						# with the action you are remaping
-						var inputImageLoading = Image.load_from_file( HUDnGUI.spritesForActions.get( InputMap.get_actions()[remapIterator] ) )
-						var inputTextureLoading = ImageTexture.create_from_image(inputImageLoading)
-						
-						
-						
-						# this removes the image from the previous action
-						var previousKeysActionTextrue = HUDnGUI.compyKeyboardSprites[ HUDnGUI.hashKeys.get( inputToChangeString ) ][0].texture
-						
-						# ` working on letting u remap the gui buttons
-						
-						var previousGUIButton = HUDnGUI.compyKeyboardSprites[ HUDnGUI.hashKeys.get( inputToChangeString ) ][2]
-						var newKeysActionTexture = HUDnGUI.compyKeyboardSprites[ HUDnGUI.hashKeys.get( newInputChangeString ) ][0].texture
-						var newGUIButton = HUDnGUI.compyKeyboardSprites[ HUDnGUI.hashKeys.get( newInputChangeString ) ][2]
-
-						# this changes the new text 
-						HUDnGUI.compyKeyboardSprites[ HUDnGUI.hashKeys.get( newInputChangeString ) ][1].text = newInputChangeString
-						# if the new one has an input mapped to it (if there is a texture or icon
-						# for the new action), then the key is also drawn (otherwise no text should
-						# appear)
-						if prevAction == "":
-							HUDnGUI.compyKeyboardSprites[ HUDnGUI.hashKeys.get(  inputToChangeString ) ][1].text = ""						
+				# if the musician iterates to the input, then they can remap it
+				# this gets the name of the key from the previous event before it changes...
+				var prevInputKeyPart = OS.get_keycode_string(InputMap.action_get_events(InputMap.get_actions()[remapIterator])[0].get_physical_keycode_with_modifiers())
+				
+				# this stores the key (keyboard button) for the prev action ...
+				var prevInputEventKey = InputMap.action_get_events(InputMap.get_actions()[remapIterator])[0]
+				# ... if the key that you are assinging an input to was used
+				# by another input, then the two get swapped. This is done by
+				# first finding the input (if there is one) and saving it ...
+				var prevAction = ""
+				var whichAction = 0
+				var prevButtonIndex = -1
+				for ii in InputMap.get_actions().size():
+					# checks if ii is greater than 78 since the first 78 actions are
+					# godot defaults, and I'm only concerned with remapping our own
+					# that the music maker uses
+					if (ii > 91) && (InputMap.action_has_event(InputMap.get_actions()[ii],musician_input) == true):
+						prevAction = InputMap.get_actions()[ii]
+						prevButtonIndex = ii - 91
 					
-						# this removes the old image
-						HUDnGUI.compyKeyboardSprites[ HUDnGUI.hashKeys.get( inputToChangeString ) ][0].texture = newKeysActionTexture
-						# this sets the new image (peep the HUDnGUI for more info)
-						# tldr: lotsa mapping and type stuff lets the compy navigate to the 
-						# correct position on the hud and load the correct image based on
-						# a key defined by the inputs
-						HUDnGUI.compyKeyboardSprites[ HUDnGUI.hashKeys.get(  newInputChangeString ) ][0].texture = previousKeysActionTextrue
-						
-						# this removes the old gui button
-						HUDnGUI.compyKeyboardSprites[ HUDnGUI.hashKeys.get( newInputChangeString ) ][2] = previousGUIButton						
-						# this sets the new gui button
-						HUDnGUI.compyKeyboardSprites[ HUDnGUI.hashKeys.get( inputToChangeString ) ][2] = newGUIButton
-						# resets vars that keep track of you remapping and being in
-						# a menu (so as to let you use the buttons that you now remapped)
-						mapDisPleas = false;
-						remappingActions = false;
-						inMenu = false;
-						break;
+				# .. if there is an action than swap it ...
+				if prevAction != "":
+					InputMap.action_erase_events(prevAction)
+					InputMap.action_add_event(prevAction,prevInputEventKey)
+				# .. regardless of if the new key was previously asigned to an
+				# action, the new key is set to the action you want to map
+				# it to
+				InputMap.action_erase_events(InputMap.get_actions()[remapIterator]);
+				InputMap.action_add_event(InputMap.get_actions()[remapIterator],musician_input)
+				
+				# this updates the visuals on the HUD n GUI
+				# and swtich the on screen buttons
+				
+				#print(remapIterator - 91)
+				#print(musician_input.as_text_physical_keycode())
+				
+				# the HUDnGUI has a method for calculating the 
+				# position on screen to place the button based
+				# on an index assigned to each button (using a 
+				# dictionary for this instead of ascii codes since
+				# its kinda larger, but might change it)
+				var keyPosition = HUDnGUI.hashKeys.get( musician_input.as_text_physical_keycode() )
+				var keyDrawYOffset = 0
+				var keyDrawXOffset = 0
+				if keyPosition <= 13:
+						keyDrawYOffset = -50
+						keyDrawXOffset = keyPosition
+				if 13 <= keyPosition && keyPosition < 34:
+						keyDrawYOffset = 100
+						keyDrawXOffset = keyPosition - 13	
+				if 34 <= keyPosition && keyPosition < 55:
+						keyDrawYOffset = 250
+						keyDrawXOffset = keyPosition - 34
+				if 55 <= keyPosition && keyPosition < 71:
+						keyDrawYOffset = 400
+						keyDrawXOffset = keyPosition - 55
+				if 71 <= keyPosition && keyPosition < 87:
+						keyDrawYOffset = 550
+						keyDrawXOffset = keyPosition - 71
+				if 87 <= keyPosition && keyPosition <= 96:
+						keyDrawYOffset = 700
+						keyDrawXOffset = keyPosition - 87
+				
+				keyDrawXOffset = -1450 + (keyDrawXOffset * 210)
+				
+				# ~ [feature] (The actual position is somewhat arbitrary
+				# and based on my keyboard, so down to make
+				# a feature where you can move them to any position, but I
+				# like this for now for helping indicate which keyboard key maps
+				# to which action)
+				
+				# after the position is found, we save the X to switch, and
+				# move the new input to the previous one...
+				var toSwitchX = HUDnGUI.compyKeyboardSprites[ remapIterator - 91  ][1].position.x
+				HUDnGUI.compyKeyboardSprites[ remapIterator - 91  ][2].position.x = keyDrawXOffset
+				
+				# ... then if there is an input assigned to the previous button
+				# that one gets moved to the X we saved just above ...
+				if prevButtonIndex != -1:
+					HUDnGUI.compyKeyboardSprites[ prevButtonIndex  ][2].position.x = toSwitchX				
+					
+				# ... after the X values get switched we do the same
+				# thing again for the Y values.
+				var toSwitchY = HUDnGUI.compyKeyboardSprites[ remapIterator - 91  ][1].position.y
+				HUDnGUI.compyKeyboardSprites[ remapIterator - 91  ][2].position.y = keyDrawYOffset
+				
+				if prevButtonIndex != -1:				
+					HUDnGUI.compyKeyboardSprites[ prevButtonIndex  ][2].position.y = toSwitchY				
+
+				# resets vars that keep track of you remapping and being in
+				# a menu (so as to let you use the buttons that you now remapped)
+				mapDisPleas = false;
+				remappingActions = false;
+				inMenu = false;
+
 			# pressing exit takes u out of the remapping actions window
 			if Input.is_action_just_pressed("ExitAction"):
 					mapDisPleas = false;
@@ -428,12 +420,12 @@ func _input(musician_input):
 		 #and the max amount of actions is 116)		
 			if Input.is_action_just_pressed("LeftAction"):
 				remapIterator -= 1;
-				if remapIterator < 78:	
-					remapIterator = 118			
+				if remapIterator < 91:	
+					remapIterator = 130			
 			if Input.is_action_just_pressed("RightAction"):
 				remapIterator += 1;
-				if remapIterator > 118:	
-					remapIterator = 78	
+				if remapIterator > 130:	
+					remapIterator = 91	
 			if Input.is_action_just_released("RecordAction") || Input.is_action_just_released("EnterAction"):
 				mapDisPleas = true;
 			
@@ -991,7 +983,7 @@ func _process(delta):
 		# the audio and instead just have the code iterate through the
 		# notes (which would b much faster, but also idk how hard so this
 		# one is kinda on the backburner rn aside from doing research)
-		if Input.is_action_just_pressed("ExitAction"):
+		if Input.is_action_just_pressed("ExitAction") && (isSaving == true):
 			saveToWav = recordToFile.get_recording()
 			recordToFile.set_recording_active(false)	
 			PlayingInProgress = false	
@@ -1357,14 +1349,7 @@ func _process(delta):
 		
 		
 		# this is for selecting individual notes
-		# ` ~ was testing the gui on screen buttons and turned off this
-		# in the project settings (top left of the editor), want to make it
-		# so you can click and drag to select as well as click on the buttons
-		# and was just gonna make it so click actions like this only work if
-		# the cursor is high enough (otherwise ignore it) (also need to give
-		# this action a better name since it doesn't really describe what
-		# it does in the music maker)
-		if Input.is_action_just_pressed("LeftClick"):
+		if Input.is_action_just_pressed("LeftClick") && get_global_mouse_position().y < -60:
 			# this lets you select new notes
 			selNotes.clear()
 			StartXSelectCorner = get_global_mouse_position().x
@@ -1372,12 +1357,12 @@ func _process(delta):
 
 			
 		# if you are conintuously holding left click
-		if Input.is_action_pressed("LeftClick"):
+		if Input.is_action_pressed("LeftClick") && get_global_mouse_position().y < 0:
 			# x pos (takes where u first click an extends it to current mouse pos)
 			var selectLengthX = -(StartXSelectCorner - get_global_mouse_position().x)
-			$TheSelector.scale.x = selectLengthX
+			$TheSelector/CollisionShape2D.scale.x = selectLengthX
 			$TheSelector.global_position.x = StartXSelectCorner + (selectLengthX / 2)
-			replaySelect = $TheSelector.global_position.x - ($TheSelector.scale.x / 2);
+			replaySelect = $TheSelector.global_position.x - ($TheSelector/CollisionShape2D.scale.x / 2);
 			# same as above but for y
 			var selectLengthY = (StartYSelectCorner - get_global_mouse_position().y)
 			$TheSelector.scale.y = selectLengthY
@@ -1406,7 +1391,7 @@ func _process(delta):
 		if Input.is_action_just_pressed("SelectAdjustAction"):
 			if !adjustingSelector:
 				selNotes.clear()
-				$TheSelector.scale.x = 16;		
+				$TheSelector/CollisionShape2D.scale.x = 16;		
 				$TheSelector.global_position.x = global_position.x;
 				$TheSelector.scale.y = 16;		
 				$TheSelector.global_position.y = global_position.y;
@@ -1438,7 +1423,7 @@ func _process(delta):
 
 			
 		if quickNav == true:
-			if Input.is_action_just_pressed("EnterAction"):
+			if Input.is_action_just_pressed("EnterAction") && ($MoveTo.text != ""):
 					inMenu = false
 					quickNav = false;
 				# if you have notes selected, they get moved to the 
@@ -1456,10 +1441,10 @@ func _process(delta):
 		# the positions quicker (by typing in values) with quick adjust
 		if adjustingSelector == true:
 			if Input.is_action_pressed("LeftAction"):	
-				$TheSelector.scale.x += 2;		
+				$TheSelector/CollisionShape2D.scale.x += 2;		
 				$TheSelector.global_position.x -= 1;
 			if Input.is_action_pressed("RightAction"):			
-				$TheSelector.scale.x += 2;	
+				$TheSelector/CollisionShape2D.scale.x += 2;	
 				$TheSelector.global_position.x += 1;
 			if Input.is_action_pressed("UpAction"):			
 				$TheSelector.scale.y -= 2;	
@@ -1490,7 +1475,7 @@ func _process(delta):
 					# second value typed is the starting time
 					selectDifference = int($EnterSelectDimensions.text) - $TheSelector.global_position.x;
 					$TheSelector.global_position.x = (selectDifference / 2) + $TheSelector.global_position.x;
-					$TheSelector.scale.x = selectDifference;
+					$TheSelector/CollisionShape2D.scale.x = selectDifference;
 					
 				if dimensionIterator == 2:				
 					# third value typed is the lower pitch (unless I messed up this calc lol)			
@@ -1525,8 +1510,8 @@ func _process(delta):
 				
 		
 		# this is the code that replays the notes that are currently select
-		if replaySelect > $TheSelector.global_position.x + ($TheSelector.scale.x / 2):
-			replaySelect = $TheSelector.global_position.x - ($TheSelector.scale.x / 2);
+		if replaySelect > $TheSelector.global_position.x + ($TheSelector/CollisionShape2D.scale.x / 2):
+			replaySelect = $TheSelector.global_position.x - ($TheSelector/CollisionShape2D.scale.x / 2);
 		replaySelect += PlayBackSpeed;
 		$TheSelector.get_node("Sprite2D").global_position.x = replaySelect
 		
@@ -1704,6 +1689,10 @@ func _process(delta):
 	# this moves the camera to follow the cursor
 	_Camera.position.x = position.x
 	
+	# if escape is pressed at any point it moves the
+	# focus off of the current button
+	if Input.is_action_just_pressed("ExitAction"):
+		$FocusReset.grab_focus()
 	# moved playing stuff to the Note obj instead
 
 	queue_redraw()

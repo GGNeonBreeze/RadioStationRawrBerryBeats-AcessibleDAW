@@ -12,11 +12,26 @@ extends Area2D
 # this stores each of the keys' sprites on the
 # computer keyboard for showing your own inputs (these get edited as you
 # remap controls, but the array gets populated in this node's ready function below)
-# this is a 2D array, where the first val is the sprite, and the 2nd
-# is the label for what gets drawn on screen (then this gets indexed
-# using hashkeys since I needed some way to iterate for initialization 
-# and also map ~, but leaving this mark here incase I want to change this)
 @onready var compyKeyboardSprites = []
+# this stores the position to draw each key based on which
+# keyboard button is assigned to it
+@onready var keyboardChords = []
+
+# this is a 3D array, where the first val is the menu that stores the button,
+# the 2nd is the sprite, and the 3rd is the label for what gets 
+# drawn on screen (then this gets indexed using hashkeys since I 
+# needed some way to iterate for initialization and also map ~, but
+# leaving this mark here incase I want to change this)
+# (these are what value in the first index maps to what menu)
+# [0] = main
+# [1] = remap
+# [2] = tracks
+# [3] = save
+# [4] = load
+# [5] = selecting notes
+# [6] = editing (selected) notes
+@onready var actionsForEachMenu = [[],[],[],[],[],[],[]]
+
 
 # this dictionary (hashmap) stored each keycode for each key on the keyboard
 # and the array index for the sprite that actually gets drawn
@@ -37,7 +52,7 @@ extends Area2D
 	# myself to report, and the map that obeys what is described above
 	# is at the bottom of this file, using a different map for now
 	# b/c this). 
-	# ~ this is real most recent, spot, trying to get it to be
+	# ~ trying to get it to be
 	# where the dictionary stores the sprite that gets loaded, and
 	# the maybe the label that actually gets drawn since we just
 	# need to iterate thru the actions and map based on that. Considering
@@ -155,49 +170,59 @@ extends Area2D
 # this dictionary as inputs get remapped and refrence these for what
 # sprite to draw
 
- # ~ adding these in rn, messing with the scale of the area2D of the HUD
-# and the values below VVVVV
-@onready var spritesForActions = {
-	"TeleportPlayingBar" : "Assets/Sprites/IconSprites/invisiblegrapes.png" ,
-	"LeftAction" : "Assets/Sprites/IconSprites/left.png" ,
-	"RightAction" : "Assets/Sprites/IconSprites/right.png" ,
-	"SaveAction" : "Assets/Sprites/IconSprites/save.png" ,
-	"EnterAction" : "Assets/Sprites/IconSprites/enter.png" ,
-	"LeftClick" : "Assets/Sprites/IconSprites/invisiblegrapes.png" ,
-	"UpAction" : "Assets/Sprites/IconSprites/up.png" ,
-	"DownAction" : "Assets/Sprites/IconSprites/down.png" ,
-	"DecSizeAction" : "Assets/Sprites/IconSprites/decreaseNoteLength.png" ,
-	"IncSizeAction" : "Assets/Sprites/IconSprites/increaseNoteLength.png" ,
-	"CopyAction" : "Assets/Sprites/IconSprites/copy.png" ,
-	"ForteAction" : "Assets/Sprites/IconSprites/forte.png" ,
-	"PianoAction" : "Assets/Sprites/IconSprites/piano.png" ,
-	"trackUpAction" : "Assets/Sprites/IconSprites/trackAbove.png" ,
-	"trackDownAction" : "Assets/Sprites/IconSprites/trackBelow.png" ,
-	"MoveToAction" : "Assets/Sprites/IconSprites/moveto1.png" ,
-	"SelectAll" : "Assets/Sprites/IconSprites/selectAll1.png" ,
-	"SelectPast" : "Assets/Sprites/IconSprites/selectPast1.png" ,
-	"TransposeAction" : "Assets/Sprites/IconSprites/invisiblegrapes.png" ,
-	"Note_C" : "Assets/Sprites/IconSprites/noteC.png" ,
-	"Note_Csh" : "Assets/Sprites/IconSprites/noteCsh.png" ,
-	"Note_D" : "Assets/Sprites/IconSprites/noteD.png" ,
-	"Note_Dsh" : "Assets/Sprites/IconSprites/noteDsh.png" ,
-	"Note_E" : "Assets/Sprites/IconSprites/noteE.png" ,
-	"Note_F" : "Assets/Sprites/IconSprites/noteF.png" ,
-	"Note_Fsh" : "Assets/Sprites/IconSprites/noteFsh.png" ,
-	"Note_G" : "Assets/Sprites/IconSprites/noteG.png" ,
-	"Note_Gsh" : "Assets/Sprites/IconSprites/noteGsh.png" ,
-	"Note_A" : "Assets/Sprites/IconSprites/noteA.png" ,
-	"Note_Ash" : "Assets/Sprites/IconSprites/noteAsh.png" ,
-	"Note_B" : "Assets/Sprites/IconSprites/noteB.png" ,
-	"Remap" : "Assets/Sprites/IconSprites/invisiblegrapes.png" ,
-	"tempoUp" : "Assets/Sprites/IconSprites/invisiblegrapes.png" ,
-	"tempoDown" : "Assets/Sprites/IconSprites/invisiblegrapes.png" ,
-	"RecordAction" : "Assets/Sprites/IconSprites/invisiblegrapes.png" ,
-	"ExitAction" : "Assets/Sprites/IconSprites/exit.png" ,
-	"PauseAction" : "Assets/Sprites/IconSprites/pause.png" ,
-	"ReturnAction" : "Assets/Sprites/IconSprites/return1.png" ,
-	"SwitchTrackAction" : "Assets/Sprites/IconSprites/switchTracks.png" ,
-	"SelectAdjustAction" : "Assets/Sprites/IconSprites/selectAll1.png" 
+ # ~ adding these in rn, this stores the sprite for the action
+# and keeps track of which menus the action (more specficically 
+# the on screen button) needs to be drawn for (instead of filling
+# up the whole screen with a bunch of keyboard keys)
+# [0] = main
+# [1] = remap
+# [2] = tracks
+# [3] = save
+# [4] = load
+# [5] = selecting notes
+# [6] = editing (selected) notes
+@onready var VariablesForActions = {
+	"TeleportPlayingBar" : ["Assets/Sprites/IconSprites/invisiblegrapes.png", [0]] ,
+	"LeftAction" : ["Assets/Sprites/IconSprites/left.png", [0,1,2,5,6]] ,
+	"RightAction" : ["Assets/Sprites/IconSprites/right.png", [0,1,2,5,6]] ,
+	"SaveAction" : ["Assets/Sprites/IconSprites/save.png", [0]] ,
+	"EnterAction" : ["Assets/Sprites/IconSprites/enter.png", [0,1,2,3,4,5,6]] ,
+	"LeftClick" : ["Assets/Sprites/IconSprites/invisiblegrapes.png", [0]] ,
+	"UpAction" : ["Assets/Sprites/IconSprites/up.png", [0,1,2,5,6]] ,
+	"DownAction" : ["Assets/Sprites/IconSprites/down.png", [0,1,2,5,6]] ,
+	"DecSizeAction" : ["Assets/Sprites/IconSprites/decreaseNoteLength.png", [0,2,6]] ,
+	"IncSizeAction" : ["Assets/Sprites/IconSprites/increaseNoteLength.png", [0,2,6]] ,
+	"CopyAction" : ["Assets/Sprites/IconSprites/copy.png", [0]] ,
+	"ForteAction" : ["Assets/Sprites/IconSprites/forte.png", [0,2,6]] ,
+	"PianoAction" : ["Assets/Sprites/IconSprites/piano.png", [0,2,6]] ,
+	"trackUpAction" : ["Assets/Sprites/IconSprites/trackAbove.png", [0,6]] ,
+	"trackDownAction" : ["Assets/Sprites/IconSprites/trackBelow.png", [0,6]] ,
+	"MoveToAction" : ["Assets/Sprites/IconSprites/moveto1.png", [0,6]] ,
+	"SelectAll" : ["Assets/Sprites/IconSprites/selectAll1.png", [0]] ,
+	"SelectPast" : ["Assets/Sprites/IconSprites/selectPast1.png", [0]] ,
+	"TransposeAction" : ["Assets/Sprites/IconSprites/invisiblegrapes.png", [0]] ,
+	"Note C" : ["Assets/Sprites/IconSprites/noteC.png", [0]] ,
+	"Note C Sharp" : ["Assets/Sprites/IconSprites/noteCsh.png", [0]] ,
+	"Note D" : ["Assets/Sprites/IconSprites/noteD.png", [0]] ,
+	"Note D Sharp" : ["Assets/Sprites/IconSprites/noteDsh.png", [0]] ,
+	"Note E" : ["Assets/Sprites/IconSprites/noteE.png", [0]] ,
+	"Note F" : ["Assets/Sprites/IconSprites/noteF.png", [0]] ,
+	"Note F Sharp" : ["Assets/Sprites/IconSprites/noteFsh.png", [0]] ,
+	"Note G" : ["Assets/Sprites/IconSprites/noteG.png", [0]] ,
+	"Note G Sharp" : ["Assets/Sprites/IconSprites/noteGsh.png", [0]] ,
+	"Note A" : ["Assets/Sprites/IconSprites/noteA.png", [0]] ,
+	"Note A Sharp" : ["Assets/Sprites/IconSprites/noteAsh.png", [0]] ,
+	"Note B" : ["Assets/Sprites/IconSprites/noteB.png", [0]] ,
+	"Remap" : ["Assets/Sprites/IconSprites/invisiblegrapes.png", [0]] ,
+	"tempoUp" : ["Assets/Sprites/IconSprites/invisiblegrapes.png", [0]] ,
+	"tempoDown" : ["Assets/Sprites/IconSprites/invisiblegrapes.png", [0]] ,
+	"RecordAction" : ["Assets/Sprites/IconSprites/invisiblegrapes.png", [0,3]] ,
+	"ExitAction" : ["Assets/Sprites/IconSprites/exit.png", [0,1,2,3,4,5,6]] ,
+	"PauseAction" : ["Assets/Sprites/IconSprites/pause.png", [0]] ,
+	"ReturnAction" : ["Assets/Sprites/IconSprites/return1.png", [0]] ,
+	"SwitchTrackAction" : ["Assets/Sprites/IconSprites/switchTracks.png", [0]] ,
+	"SelectAdjustAction" : ["Assets/Sprites/IconSprites/selectAll1.png", [0]] ,
+	"LoadAction" : ["Assets/Sprites/IconSprites/save.png", [0]] 
 }
 
 # the sprite (not the image file, but the data on what to draw for 
@@ -209,14 +234,16 @@ extends Area2D
 # this var keeps track of which button should have focus
 @onready var focusKeyIterator = 0
 
+# this function changes which of the keys are onscreen when
+# you switch menus
+func _switch_menu():
+	pass
+
 func _ready():
 	var keyDrawYOffset = 60
 	var keyDrawXOffset = 0
-	for i in range(96):
+	for ii in range(54):
 		
-		# ` ~ these are the keys that I counted for each row
-		# wanna figure out why there is the gap (I think it could be
-		# from changing just the y but not the x, or something else)
 
 		
 		# default textures are invisible unless assigned to an action
@@ -232,31 +259,62 @@ func _ready():
 		# the blank one ~ for future me this can prob be 
 		# optimized a bit with an extra array or somth, but since
 		# its being called only on boot up its pretty ok tbh)
-		#var checkFirstInputEvents = InputEventKey.new()
-		var actionShortcut = InputEventKey.new()
+		#var inputShortcut = InputEventKey.new()
+		var actionShortcut = null#InputEventKey.new()
+		
+		var inputShortcut = null
 
 		# ~ [bug] Want to find a more permanent fix for making it so 
 		# this iterate doesn't have to be manually changed with each 
 		# update to Godot that adds new default inputs (this for loop iterate
 		# through the custom inputs used by this project)
-		for ii in range(53):
-			# check each of the actions (these are the ones defined at the
-			# start of the project, changed from the godot menu/read from
-			# the settings save file (when thats added, not rn))
-			var checkFirstInputEvents = InputMap.action_get_events(InputMap.get_actions()[78 + ii])[0]
-			# if the action is a key (to check the keycode) and matches the
-			# current sprite we are trying to set the image of, then look up
-			# which sprite is used for the assigned action
-			#print(checkFirstInputEvents)
-			if checkFirstInputEvents is InputEventKey:
-				if hashKeys.get( checkFirstInputEvents.as_text_physical_keycode() ) == i:
-					image = Image.load_from_file(spritesForActions.get(InputMap.get_actions()[78 + ii]))
+
+
+		# check each of the actions (these are the ones defined at the
+		# start of the project, changed from the godot menu/read from
+		# the settings save file (when thats added, not rn))
+		inputShortcut = InputMap.action_get_events(InputMap.get_actions()[78 + ii])[0]
+		# if the action is a key (to check the keycode) and matches the
+		# current sprite we are trying to set the image of, then look up
+		# which sprite is used for the assigned action
+		if inputShortcut is InputEventKey:
+			if hashKeys.get( inputShortcut.as_text_physical_keycode() ) != null:
+				# this stores the name of the action that is assigned to the input
+				# which is used later for the onscreen buttons
+				# (action shortcut gets set after checking if the input exists
+				# since we use this var below after the for loop)
+				actionShortcut = InputMap.get_actions()[78 + ii]
+				# we then actually get the image to load for the button
+				image = Image.load_from_file(VariablesForActions.get(actionShortcut)[0])
 				# aside from getting the image, we also get the button label here.
-					buttonText = checkFirstInputEvents.as_text_physical_keycode()
-					# this stores the name of the action that is assigned to the input
-					# which is used later for the onscreen buttons
-					actionShortcut = InputMap.get_actions()[78 + ii]
-		#print(actionShortcut)
+				buttonText = inputShortcut.as_text_physical_keycode()
+
+				# ~[feature] this determines the position to place the buttons at by
+				# default. Would like to make it so they can be customized (also
+				# marking this as a feature since the idea is that any changes a musician
+				# makes to the on screen positions should be saved in the config file)
+				var keyPosition = hashKeys.get( inputShortcut.as_text_physical_keycode() )
+				if keyPosition <= 13:
+						keyDrawYOffset = -50
+						keyDrawXOffset = keyPosition
+				if 13 <= keyPosition && keyPosition < 34:
+						keyDrawYOffset = 100
+						keyDrawXOffset = keyPosition - 13	
+				if 34 <= keyPosition && keyPosition < 55:
+						keyDrawYOffset = 250
+						keyDrawXOffset = keyPosition - 34
+				if 55 <= keyPosition && keyPosition < 71:
+						keyDrawYOffset = 400
+						keyDrawXOffset = keyPosition - 55
+				if 71 <= keyPosition && keyPosition < 87:
+						keyDrawYOffset = 550
+						keyDrawXOffset = keyPosition - 71
+				if 87 <= keyPosition && keyPosition <= 96:
+						keyDrawYOffset = 700
+						keyDrawXOffset = keyPosition - 87
+
+
+
 
 		# once the texture has been determined, then it gets set
 		# to the corresponding sprite / other deets like the position
@@ -293,9 +351,11 @@ func _ready():
 			"Equal":
 				buttonText = "="
 			"BracketLeft":
-				buttonText ="["
+				buttonText = "["
 			"BracketRight":
-				buttonText ="]"					
+				buttonText = "]"	
+			"Comma":
+				buttonText = ","				
 			#"BackSlash":
 				#buttonText ="\\"			
 		
@@ -306,28 +366,15 @@ func _ready():
 		var focusButton = Button.new()
 		
 		
-		match i:
-			87:
-				keyDrawYOffset = 600
-				keyDrawXOffset = 0
-			71:
-				keyDrawYOffset = 450
-				keyDrawXOffset = 0
-			55:
-				keyDrawYOffset = 300
-				keyDrawXOffset = 0
-			34:
-				keyDrawYOffset = 150
-				keyDrawXOffset = 0
-			13:
-				keyDrawYOffset = 0
-				keyDrawXOffset = 0
-				
-		hudTest.global_position.x = -1100 + (keyDrawXOffset )
-		
-		keyDrawXOffset += 180
 
-		hudTest.global_position.y = keyDrawYOffset
+		# this stores the coords for the key so if a user
+		# remaps an action, the position as to where it gets 
+		# drawn is stored
+		keyboardChords.append([keyDrawXOffset,keyDrawYOffset])
+		
+		# then the X and Y for each of these gets set
+		hudTest.global_position.x = -1450 + (keyDrawXOffset * 210)
+		hudTest.global_position.y = keyDrawYOffset 
 		
 		buttonLabel.global_position.x = hudTest.global_position.x
 		buttonLabel.global_position.y = hudTest.global_position.y
@@ -337,31 +384,43 @@ func _ready():
 		# ` ~ [feature] would like some option to make buttons invisible when they arent
 		# being used since obv it makes the screen look more busy (this was
 		# also just test text to see that every button was being put on screen)
-		focusButton.text = "test"
+		focusButton.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+		focusButton.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			
+		# this is just a failsafe to make sure the actionShortcut
+		# exists (and was originally included since this looped 
+		# for each key instead of each action)
+		if actionShortcut != null:
+			focusButton.text = actionShortcut
+			focusButton.icon = texture
+			focusButton.visible = true
+			# after the positions for both get set then they get stored 
+			# (as children which loads them in, and to this array which
+			# makes them easier to index later when u change inputs)
+			#add_child(hudTest)
+			add_child(buttonLabel)
+			add_child(focusButton)
+			
+			# this sets the on screen button's functionality so you can
+			# use those instead of needing to have access to each keyboard key
+			# (can be pressed with mouse or itreated with focus, these functions
+			# are defined below the on ready one here)
+			focusButton.button_down.connect(_on_gui_button_pressed.bind(actionShortcut))
+			focusButton.button_up.connect(_on_gui_button_released.bind(actionShortcut))
+			# adds the button to the list of menu buttons so when
+			# drawing all of them the program knows which ones to 
+			# peak at (this first if checks if the key has an associated
+			# action or not)
+			compyKeyboardSprites.append([hudTest,buttonLabel,focusButton])
 
-		# after the positions for both get set then they get stored 
-		# (as children which loads them in, and to this array which
-		# makes them easier to index later when u change inputs)
-		add_child(hudTest)
-		add_child(buttonLabel)
-		add_child(focusButton)
-		
-		# this sets the on screen button's functionality so you can
-		# use those instead of needing to have access to each keyboard key
-		# (can be pressed with mouse or itreated with focus, these functions
-		# are defined below the on ready one here)
-		focusButton.button_down.connect(_on_gui_button_pressed.bind(actionShortcut))
-		focusButton.button_up.connect(_on_gui_button_released.bind(actionShortcut))
-		
-
-		compyKeyboardSprites.append([hudTest,buttonLabel,focusButton])
 
 
 # this is the function that gets called when the on screen buttons are
 # pressed (aka if you focus thru the screen inputs or click them with a mouse
 # tho the code for each of these actions is in the playingNode)
 func _on_gui_button_pressed(guiActionName):
-	Input.action_press(guiActionName)
+	if guiActionName != null:
+		Input.action_press(guiActionName)
 
 # same idea as above, but for the releasing of a button
 func _on_gui_button_released(guiActionName):
@@ -388,11 +447,32 @@ func _process(delta: float) -> void:
 	# anyways (maybe can be literally the same structure, but making another
 	# for intuitiveness/readability wouldn't hurt since they use like the
 	# same amount of storing of nodes anyways)
+	# ^ in the middle of implementing this, made compyKeyboard a 3d array
+	# next thing is to keep track of the menu that the user is in/
+	# make the other keys invisible, but for now, just do the
+	# screen reader to proof of concept that part
+	# Taking a break for a bit, but the idea is instead of having
+	# an array of each of the keyboard buttons, just having an
+	# array of the keyboard keys and letting you remap those
+	# (likely needs another array to store the cords of all
+	# the keyboard keys for drawing them on screen, but this
+	# means we store much less and remapping just changes where
+	# the on screen button is and what key does the action
+	# of the newly mapped option)
+	# ^ problem is that the way how we index the action is thru
+	# the keyboard key pressed, so indexing the smaller
+	# array causes errors (would need a way to find the key
+	# associated with the input being switched for this
+	# to work, which might not be easily possible unless
+	# kinda doing what's already in place so unsure if 
+	# we do this, really depends on if there is an easy
+	# way to do it or not)
 	if Input.is_action_just_released("FocusAction"):
-		compyKeyboardSprites[focusKeyIterator][2].grab_focus()
-		focusKeyIterator += 1
-		if focusKeyIterator > compyKeyboardSprites.size():
-			focusKeyIterator = 0
+		if compyKeyboardSprites[focusKeyIterator][2].visible == true:
+			compyKeyboardSprites[focusKeyIterator][2].grab_focus()
+			focusKeyIterator += 1
+			if focusKeyIterator >= compyKeyboardSprites.size():
+				focusKeyIterator = 0
 
 # this code below is unused, but keeping it here incase we change
 # what's up with the mappings n stuff

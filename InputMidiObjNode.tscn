@@ -1,11 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://cuio3iu2hwcgg"]
+[gd_scene format=3 uid="uid://cuio3iu2hwcgg"]
 
 [ext_resource type="Script" uid="uid://hrlkgc0e25pf" path="res://PlayingNode.gd" id="1_4e170"]
 [ext_resource type="Script" uid="uid://bmdw1d7m0hjb7" path="res://Camera2D.gd" id="2_11vck"]
-[ext_resource type="Texture2D" uid="uid://cn5vy0ictqpa" path="res://Assets/Sprites/IconSprites/plaingIdle.png" id="3_xs51f"]
-[ext_resource type="Texture2D" uid="uid://brxx7076i1jph" path="res://Assets/Sprites/PlayingSprites/rawr1.png" id="4_25h5o"]
-[ext_resource type="Texture2D" uid="uid://bvl1a38qoixc2" path="res://Assets/Sprites/PlayingSprites/rawr3.png" id="5_sfosx"]
-[ext_resource type="Texture2D" uid="uid://ds5askm0cgb4h" path="res://Assets/Sprites/IconSprites/MusicMakerNoteReal.png" id="9_25h5o"]
+[ext_resource type="Texture2D" uid="uid://bfpp0dyx1s4sp" path="res://Assets/Sprites/IconSprites/plaingIdle.png" id="3_xs51f"]
+[ext_resource type="Texture2D" uid="uid://dqdukedwau8py" path="res://Assets/Sprites/PlayingSprites/rawr1.png" id="4_25h5o"]
+[ext_resource type="Texture2D" uid="uid://bxe53xe0bdjfh" path="res://Assets/Sprites/PlayingSprites/rawr3.png" id="5_sfosx"]
+[ext_resource type="Texture2D" uid="uid://bbqvl8j6jo0ix" path="res://Assets/Sprites/IconSprites/MusicMakerNoteReal.png" id="9_25h5o"]
 [ext_resource type="Script" uid="uid://dyg08le6swk18" path="res://HUDnGUI.gd" id="10_sfosx"]
 [ext_resource type="Script" uid="uid://1cuxqu4u3ryb" path="res://audio_stream_player.gd" id="11_uhv00"]
 
@@ -37,12 +37,12 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xs51f"]
 size = Vector2(1, 1)
 
-[node name="Node2D" type="Node2D"]
+[node name="Node2D" type="Node2D" unique_id=1798926040]
 
-[node name="PlayingNode" type="Area2D" parent="."]
+[node name="PlayingNode" type="Area2D" parent="." unique_id=1896898172]
 script = ExtResource("1_4e170")
 
-[node name="MoveTo" type="LineEdit" parent="PlayingNode"]
+[node name="MoveTo" type="LineEdit" parent="PlayingNode" unique_id=716200969]
 offset_left = -700.0
 offset_top = -210.0
 offset_right = -631.438
@@ -50,84 +50,84 @@ offset_bottom = -179.0
 focus_next = NodePath("../TrackInstrument")
 metadata/_edit_use_anchors_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayingNode"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayingNode" unique_id=2086163510]
 position = Vector2(0.5, -1)
 shape = SubResource("RectangleShape2D_wduky")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="PlayingNode"]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="PlayingNode" unique_id=969251805]
 volume_db = -33.016
 
-[node name="Camera2D" type="Camera2D" parent="PlayingNode"]
+[node name="Camera2D" type="Camera2D" parent="PlayingNode" unique_id=677174962]
 zoom = Vector2(0.8, 0.8)
 script = ExtResource("2_11vck")
 
-[node name="TrackInstrument" type="LineEdit" parent="PlayingNode"]
+[node name="TrackInstrument" type="LineEdit" parent="PlayingNode" unique_id=637784771]
 offset_left = -700.0
 offset_top = -270.0
 offset_right = -631.438
 offset_bottom = -239.0
 focus_next = NodePath("../MidiFile")
 
-[node name="MenuBar" type="MenuBar" parent="PlayingNode"]
+[node name="MenuBar" type="MenuBar" parent="PlayingNode" unique_id=1543108526]
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="PlayingNode"]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="PlayingNode" unique_id=1582975179]
 position = Vector2(0, -52)
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_6sbir")
 animation = &"idle"
 
-[node name="MidiFile" type="LineEdit" parent="PlayingNode"]
+[node name="MidiFile" type="LineEdit" parent="PlayingNode" unique_id=958040720]
 offset_left = -700.0
 offset_top = -330.0
 offset_right = -631.438
 offset_bottom = -299.0
 focus_next = NodePath("../ProjectSave")
 
-[node name="ProjectSave" type="LineEdit" parent="PlayingNode"]
+[node name="ProjectSave" type="LineEdit" parent="PlayingNode" unique_id=1752251988]
 offset_left = -700.0
 offset_top = -390.0
 offset_right = -631.438
 offset_bottom = -359.0
 focus_next = NodePath("../TrackColor")
 
-[node name="TrackColor" type="LineEdit" parent="PlayingNode"]
+[node name="TrackColor" type="LineEdit" parent="PlayingNode" unique_id=2051422283]
 offset_left = -700.0
 offset_top = -150.0
 offset_right = -631.438
 offset_bottom = -119.0
 focus_next = NodePath("../MoveTo")
 
-[node name="TheSelector" type="Area2D" parent="PlayingNode"]
+[node name="TheSelector" type="Area2D" parent="PlayingNode" unique_id=1446685823]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayingNode/TheSelector"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayingNode/TheSelector" unique_id=2065975323]
 modulate = Color(0.788041, 0.467953, 0.76401, 1)
 shape = SubResource("RectangleShape2D_xs51f")
 
-[node name="Sprite2D" type="Sprite2D" parent="PlayingNode/TheSelector"]
+[node name="Sprite2D" type="Sprite2D" parent="PlayingNode/TheSelector" unique_id=2122034353]
 self_modulate = Color(0.788235, 0.466667, 0.764706, 0.439216)
 scale = Vector2(1, 0.2)
 texture = ExtResource("9_25h5o")
 
-[node name="FocusReset" type="LineEdit" parent="PlayingNode"]
+[node name="FocusReset" type="LineEdit" parent="PlayingNode" unique_id=1942059105]
 offset_left = -817.0
 offset_top = 415.0
 offset_right = -748.438
 offset_bottom = 446.0
 
-[node name="EnterSelectDimensions" type="LineEdit" parent="PlayingNode"]
+[node name="EnterSelectDimensions" type="LineEdit" parent="PlayingNode" unique_id=1022224796]
 offset_left = -700.0
 offset_top = -90.0
 offset_right = -631.438
 offset_bottom = -59.0
 
-[node name="HUDnGUI" type="Area2D" parent="."]
+[node name="HUDnGUI" type="Area2D" parent="." unique_id=700879356]
 position = Vector2(0, -0.035)
-scale = Vector2(0.58, 0.58)
+scale = Vector2(0.5, 0.5)
 script = ExtResource("10_sfosx")
 
-[node name="NarrationAudioPlayer" type="AudioStreamPlayer" parent="."]
+[node name="NarrationAudioPlayer" type="AudioStreamPlayer" parent="." unique_id=86752882]
 script = ExtResource("11_uhv00")
 
 [connection signal="finished" from="NarrationAudioPlayer" to="NarrationAudioPlayer" method="_on_finished"]
