@@ -50,7 +50,7 @@ class_name PlayBar2
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-# play / rec
+	# play / rec
 	OS.open_midi_inputs()
 	print(OS.get_connected_midi_inputs())
 	 # layer the playing bar is on
@@ -216,7 +216,7 @@ func _ready():
 # stuff (namely to remove the previous input's icon when u remap)
 @onready var invisibleLoad = Image.load_from_file( "res://Assets/Sprites/IconSprites/invisiblegrapes.png" )
 @onready var invisibleGrapes = ImageTexture.create_from_image(invisibleLoad)
-						
+# sets the window size
 
 
 # this function is for a couple of events that draw text (namely track shifting
@@ -227,14 +227,14 @@ func _draw():
 	# with the tracks (try switching tracks while farther out)
 	var default_font = ThemeDB.fallback_font
 	if shiftingTracks == true:
-		draw_string(default_font, Vector2(position.x + 50, position.y - 40), str(currentTrack),0, 90, 22)
+		draw_string(default_font, Vector2(0 + 50, global_position.y - 40), str(currentTrack),0, 90, 22)
 
-	draw_string(default_font, Vector2(0, position.y - 90), str(position.x),0, 90, 22)
+	draw_string(default_font, Vector2(0, global_position.y - 90), str(global_position.x),0, 90, 22)
 
 	# if you are remapping actions
 	if remappingActions == true:
-		draw_string(default_font, Vector2(0, position.y + 40), str(InputMap.get_actions()[remapIterator]),0, -1, 22)
-		draw_string(default_font, Vector2(0, position.y + 60), str(remapIterator - 91),0, -1, 22)
+		draw_string(default_font, Vector2(0, global_position.y + 40), str(InputMap.get_actions()[remapIterator]),0, -1, 22)
+		draw_string(default_font, Vector2(0, global_position.y + 60), str(remapIterator - 91),0, -1, 22)
 		
 
 # *user input (part 1, midi keyboard)
@@ -445,38 +445,10 @@ func _print_midi_info(midi_event):
 	print("Controller number: ", midi_event.controller_number)
 	print("Controller value: ", midi_event.controller_value)
 	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-
-	# *fileRead *file *read *Read *load * load * read * Read
-
-	# ~ uncomment for ref for midi reading
 	
-	# change this for debug
-	#midiLoadCheck = true
 	
-	# toggle midi/project selecting menu
-	if Input.is_action_just_pressed("LoadAction") && inMenu == false:
-		shiftingMidis = true
-		inMenu = true
-		get_node("MidiFile").grab_focus()
-		
-	# this lets you adjust the starting substring a bit cuz I'm unsure when some tracks
-	# start exactly
-	if shiftingMidis == true:
-		# press esc to exit the menu
-		if Input.is_action_just_pressed("ExitAction"):
-			shiftingMidis = false
-
-	# when you have typed in the midi file it gets loaded
-	if Input.is_action_just_pressed("EnterAction") && shiftingMidis == true: 
-		midiLoadCheck = false
-		shiftingMidis = false
-		inMenu = false
-
-	# if you are opening a file
-	if midiLoadCheck == false:
-		
+	# *fileRead *file *read *Read *load * load * read * Read	
+func fileLoad():
 		# big ideas with this is it lets the program read both midi files and
 		# rawr berry project files (made it so the rawr berry files are mostly
 		# formatted the same), its a little unfinished with full functionality
@@ -488,23 +460,38 @@ func _process(delta):
 		# start times for each note as they get played and subtracts it from the
 		# delta end times when those get called)	
 		var MidiNotes = [[]];
+		
+		# this is just for saving it to the customAssets directory
+		# so you don't have to type that every time
+		var loadFileName = "customAssets/" + $MidiFile.text
+		
 		for j in range(300):
 			MidiNotes[0].append(null)
 
 		# * if it crashes at some other points (beyond negative notes, still working on
 		# ) might be a problem of different note events potentially (some do have pitch bend)
-		var isMidi : int = $MidiFile.text.rfind(".mid")
+		var isMidi : int = loadFileName.rfind(".mid")
 		
 		# this stores the info of the music as a string right down dere
 		var hexStringVer : String = ""
 		
 		# if the file is a midi file
 		if isMidi != -1:
-			var content = FileAccess.get_file_as_bytes($MidiFile.text)
+			var content = FileAccess.get_file_as_bytes(loadFileName)
 			hexStringVer = content.hex_encode()
 		# if the file is a project file (hex encoded with csv info on tracks)
 		if isMidi == -1:
-			var FileAsString = FileAccess.get_file_as_string($MidiFile.text)
+			var FileAsString = FileAccess.get_file_as_string(loadFileName)
+		
+			# this checks that the file exists, if it doesn't (or you just
+			# don't type in anything I guess) then you exit the load menu
+			if FileAsString == "":
+				inMenu = false
+				midiLoadCheck = true
+				shiftingMidis = false
+				$MidiFile.clear()				
+				
+			
 		
 		# this makes it so mid files can be read, but for project files
 		# their extra detail gets stored in csv (comma separated value) style
@@ -517,15 +504,11 @@ func _process(delta):
 		# remaining items beyond [0] and [1] are the instrument 
 		# file names
 
-		# this gaurantees one new track is made when u load 
-		# a file (the file gets put on the new track)
-			tracks.append("")
-			TrackVolume.append(-1.0)
+
 		# this sets the current track to be the new one
 			currentTrack = tracks.size() - 1
 	
 
-			
 			if FileAsString.size() >= 3:
 				for i in range(FileAsString.size()):
 					# this skips the first two items (the note and volume parts
@@ -537,8 +520,8 @@ func _process(delta):
 					# ~ biggest thing to note is this means not every midi is gauranteed
 					# to work, but all of the ones I have tested do)
 				
-					if i > 1:
-						if i > tracks.size():
+					if i >= 2:
+						if i > 2:
 							# adds to teh prexisting tracks
 							tracks.append("")
 							TrackVolume.append(-1.0)
@@ -551,14 +534,14 @@ func _process(delta):
 								MidiNotes[MidiNotes.size() - 1].append(null);
 						
 						# if there is a file name then load it
-						# ~ [bug] p sure this is bugged I def messed up the indexes
-						# but am focuing on other proof of concept stuff rn
 						if FileAsString[i] != "":
 							# this saves the files for each track
 							tracks[i - 2] = FileAsString[i]
 						# if there is no track load the default one
 						else:
 							tracks[i - 2] = "res://GenA.mp3"
+
+
 
 			hexStringVer = FileAsString[0]
 		# this converts each of the ascii chars into hex (useful for parsing the midi)
@@ -758,7 +741,7 @@ func _process(delta):
 							#a_note.track = currentTrack + int(TopTenChars[3])
 							# this just puts it on the default tracks (for now commenting as needed)
 							a_note.track = int(TopTenChars[3])							
-							a_note.Instrument = tracks[a_note.track - 1]
+							a_note.Instrument = tracks[a_note.track]
 							a_note.noteColor = Color(TrackColors[( a_note.track * 3 ) % TrackColors.size()], TrackColors[( (a_note.track * 3) + 1 ) % TrackColors.size()], TrackColors[( (a_note.track * 3) + 2 ) % TrackColors.size()])							
 
 							
@@ -857,160 +840,23 @@ func _process(delta):
 			position.x += 5000
 		
 		AudioServer.set_bus_mute(masterBus,false)
-
+		
+		$MidiFile.clear()
+		
 		get_node("FocusReset").grab_focus();
 
 		print("finished loading file")
 
 
 
-	 # *undo
-	
-	# quickly undo the last set of saveNotes (includes undoing a midi file)
-	#if Input.is_key_pressed(KEY_DELETE):
-	if Input.is_key_pressed(KEY_CTRL) && Input.is_key_pressed(KEY_Z):	
-		for i in range(saveNotes.size()):
-			if saveNotes[i] != null && saveNotes[i].track == currentTrack:
-				saveNotes[i].queue_free();	
-		saveNotes.clear()
-	
-	
-	# *fileWrite *write Write
-	
-	# press space to start recording, and esc to stop 
-	# * might b better to set a different var to check what u are attempting
-	# to use the record button for (like a var that checks if u are in a state to 
-	# start recieving notes), my only worry is some actions require u to be in
-	# multiple menus (using quickNav + select), so idk
-	if Input.is_action_just_pressed("RecordAction") && inMenu == false:
-		RecordingInProgress = true
-	if Input.is_action_just_pressed("ExitAction") && RecordingInProgress == true:
-		RecordingInProgress = false
-		inMenu == false
 
-
-	# checks if u are recording
-	if RecordingInProgress == true:
-		PreSigUniversalTimer += 1
-		PlayingInProgress = true
-		$AnimatedSprite2D.play("run")
-		
-		# ~ some weird limitations, pressing g and h doens't et u press
-		# f as well, and u also can't press more than 6 keys which I think
-		# are godot restrictions, but reasearch taht abit to see forsure. also the
-		# reason why this i sin the delta event instead is b/c it don't work
-		# in the other one
-		
-		# playing with keyboard keys
-		
-		# ~ could maybe be more optimized since this is using code
-		# from above (in the InputEventMIDI check) but for the sake
-		# of proof of concept this works
-		for i in range(CompKeyboardNoteMapping.size()):
-			if (Input.is_action_just_pressed(CompKeyboardNoteMapping[i]) == true):
-				var a_note = loadedNote.instantiate();
-				get_parent().add_child(a_note);
-				a_note.growing = true;
-				NoteID += 1
-				a_note.MyNoteID = NoteID
-				a_note.summonedX = position.x
-				# the 12 is an offset to not make pitches too low for me
-				a_note.pitch = -60 - i
-				a_note.volume = TrackVolume[currentTrack]
-				# trying to pass in notes into tracks n stuff
-				# also trying to figure this out (tired rn ctrlf ->, @onready var notesInTrack = [null])
-				a_note.Instrument = tracks[currentTrack]
-				a_note.track = currentTrack	
-				a_note.noteColor = Color(TrackColors[( currentTrack * 3 ) % TrackColors.size()], TrackColors[( (currentTrack * 3) + 1 ) % TrackColors.size()], TrackColors[( (currentTrack * 3) + 2 ) % TrackColors.size()])							
-
-				a_note.canPlay = true
-
-				currentNotes[a_note.pitch + 12] = a_note
-				saveNotes.append(a_note)			
-			# when the key is not being held
-			if (Input.is_action_just_released(CompKeyboardNoteMapping[i]) == true):		
-				currentNotes[-60 - i + 12].growing = false;
-
-	
  # *save * save
-	# basic recording thingy
-	
-	# refrenced these for allowing wav recording capture
-		# ~ tldr: like u can write to a wav file by just capturing the music as
-		# its being played back, still need some work for writing to other file types 
-		# (tbf midi is basically done aside from other small functionality), but yeah
-			# https://docs.godotengine.org/en/stable/classes/class_audioeffectcapture.html
-			# https://docs.godotengine.org/en/stable/classes/class_audiostreamwav.html
-			# https://docs.godotengine.org/en/stable/classes/class_audioeffectrecord.html#class-audioeffectrecord
-
-	# this specific part saves to a project file 
-	if Input.is_action_just_pressed("SaveAction") && inMenu == false:
-		inSavingMenu = true
-		inMenu = true
-		
-	if inSavingMenu == true:
-		# lets u enter a file to save (for saving the project as a project file)
-		if Input.is_action_pressed("EnterAction") && isSaving == false:
-			get_node("ProjectSave").grab_focus()
-			# this determines what type of file u are trying to save to
-			# where true means u are saving the project file ...
-			saveFileType = 0
-			# ~ this lets u use enter now as a button for entering
-			# the name, and not for deciding the file type, maybe
-			# consider using a different input to check for, for both
-			# (will prob do anyways when more file types are added, but since
-			# its two now this is okay)
-			isSaving = true
-		# ... lets u save the project/record it as a wav ...
-		if Input.is_action_just_pressed("RecordAction") && isSaving == false:
-			# ... and for wavs, this var gets set to false (lets the program
-			# know which saving functions to go thru as these are two different
-			# file types)
-			saveFileType = 1
-			# same reason as above, makes it so when u press enter to enter
-			# the name of the file it doens't also change which file its being
-			# saved to
-			isSaving = true
-			
-			recordToFile = AudioServer.get_bus_effect(masterBus,0)
-			PlayingInProgress = true
-			print(recordToFile)
-			recordToFile.set_recording_active(true)	
-		# pressing exit stops the wav recording and you can enter in 
-		# a file name to save it ... ~ [feature] want to eventually make it so combing
-		# through and recording audio is an option, but also want to 
-		# make it so you can just write to a file without having to iterate through
-		# the audio and instead just have the code iterate through the
-		# notes (which would b much faster, but also idk how hard so this
-		# one is kinda on the backburner rn aside from doing research)
-		if Input.is_action_just_pressed("ExitAction") && (isSaving == true):
-			saveToWav = recordToFile.get_recording()
-			recordToFile.set_recording_active(false)	
-			PlayingInProgress = false	
-			_AudioStreamPlayer.set_stream(saveToWav)
-			isSaving = true
-			get_node("ProjectSave").grab_focus()
-			
-			
-	# ... after typing in the name of the wav and pressing enter the
-	# file is saved (this is for wav files)
-	if saveFileType == 1 && isSaving == true && $ProjectSave.text != "" && Input.is_action_just_pressed("EnterAction"):
-		saveToWav.save_to_wav($ProjectSave.text)
-		isSaving = false
-		inSavingMenu = false
-		inMenu = false		
-		$ProjectSave.clear()
-		print("save to wav")
-
-	# after typing in the name of the wav and pressing enter the
-	# file is saved (this is for project files) ~ main thing to
-	# note is that the file extension can be whatever, but want something
-	# that ties into the name of the program (ig since this is opensource
-	# someone could just rename it to some extent, but I'd like for there
-	# to be some organizing, rn it just saves it to whatever you type in)
-	if saveFileType == 0 && inSavingMenu == true && $ProjectSave.text != "" && Input.is_action_just_pressed("EnterAction"):
-		var file = FileAccess.open($ProjectSave.text, FileAccess.WRITE)
+func fileSave():
+	# creates the file 
+		var file = FileAccess.open("customAssets/" + $ProjectSave.text, FileAccess.WRITE)
+	# this is the string we are going to write to the file (gets started here)
 		var fileSaveString = "00c000"
+	# this keeps track of data to determine what we write to the string above
 		var savingArray = []
 	
 		for child in get_parent().get_children():
@@ -1225,6 +1071,192 @@ func _process(delta):
 		inMenu = false		
 		$ProjectSave.clear()
 		print("savingArrayfinished saving")
+	
+	
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+
+	# *fileRead *file *read *Read *load * load * read * Read
+
+	# ~ uncomment for ref for midi reading
+	
+	# change this for debug
+	#midiLoadCheck = true
+	
+	# toggle midi/project selecting menu
+	if Input.is_action_just_pressed("LoadAction") && inMenu == false:
+		shiftingMidis = true
+		inMenu = true
+		get_node("MidiFile").grab_focus()
+		
+	# this lets you adjust the starting substring a bit cuz I'm unsure when some tracks
+	# start exactly
+	if shiftingMidis == true:
+		# press esc to exit the menu
+		if Input.is_action_just_pressed("ExitAction"):
+			shiftingMidis = false
+			inMenu = false
+			$MidiFile.clear()
+
+	# when you have typed in the midi file it gets loaded
+	if Input.is_action_just_pressed("EnterAction") && shiftingMidis == true: 
+		midiLoadCheck = false
+		shiftingMidis = false
+		inMenu = false
+
+	# if you are opening a file
+	if midiLoadCheck == false:
+		fileLoad()
+
+
+
+
+	 # *undo
+	
+	# quickly undo the last set of saveNotes (includes undoing a midi file)
+	#if Input.is_key_pressed(KEY_DELETE):
+	if Input.is_key_pressed(KEY_CTRL) && Input.is_key_pressed(KEY_Z):	
+		for i in range(saveNotes.size()):
+			if saveNotes[i] != null && saveNotes[i].track == currentTrack:
+				saveNotes[i].queue_free();	
+		saveNotes.clear()
+	
+	
+	# *fileWrite *write Write
+	
+	# press space to start recording, and esc to stop 
+	# * might b better to set a different var to check what u are attempting
+	# to use the record button for (like a var that checks if u are in a state to 
+	# start recieving notes), my only worry is some actions require u to be in
+	# multiple menus (using quickNav + select), so idk
+	if Input.is_action_just_pressed("RecordAction") && inMenu == false:
+		RecordingInProgress = true
+	if Input.is_action_just_pressed("ExitAction") && RecordingInProgress == true:
+		RecordingInProgress = false
+		inMenu == false
+
+
+	# checks if u are recording
+	if RecordingInProgress == true:
+		PreSigUniversalTimer += 1
+		PlayingInProgress = true
+		$AnimatedSprite2D.play("run")
+		
+		# ~ some weird limitations, pressing g and h doens't et u press
+		# f as well, and u also can't press more than 6 keys which I think
+		# are godot restrictions, but reasearch taht abit to see forsure. also the
+		# reason why this i sin the delta event instead is b/c it don't work
+		# in the other one
+		
+		# playing with keyboard keys
+		
+		# ~ could maybe be more optimized since this is using code
+		# from above (in the InputEventMIDI check) but for the sake
+		# of proof of concept this works
+		for i in range(CompKeyboardNoteMapping.size()):
+			if (Input.is_action_just_pressed(CompKeyboardNoteMapping[i]) == true):
+				var a_note = loadedNote.instantiate();
+				get_parent().add_child(a_note);
+				a_note.growing = true;
+				NoteID += 1
+				a_note.MyNoteID = NoteID
+				a_note.summonedX = position.x
+				# the 12 is an offset to not make pitches too low for me
+				a_note.pitch = -60 - i
+				a_note.volume = TrackVolume[currentTrack]
+				# trying to pass in notes into tracks n stuff
+				# also trying to figure this out (tired rn ctrlf ->, @onready var notesInTrack = [null])
+				a_note.Instrument = tracks[currentTrack]
+				a_note.track = currentTrack	
+				a_note.noteColor = Color(TrackColors[( currentTrack * 3 ) % TrackColors.size()], TrackColors[( (currentTrack * 3) + 1 ) % TrackColors.size()], TrackColors[( (currentTrack * 3) + 2 ) % TrackColors.size()])							
+
+				a_note.canPlay = true
+
+				currentNotes[a_note.pitch + 12] = a_note
+				saveNotes.append(a_note)			
+			# when the key is not being held
+			if (Input.is_action_just_released(CompKeyboardNoteMapping[i]) == true):		
+				currentNotes[-60 - i + 12].growing = false;
+
+	
+ # *save * save
+	# basic recording thingy
+	
+	# refrenced these for allowing wav recording capture
+		# ~ tldr: like u can write to a wav file by just capturing the music as
+		# its being played back, still need some work for writing to other file types 
+		# (tbf midi is basically done aside from other small functionality), but yeah
+			# https://docs.godotengine.org/en/stable/classes/class_audioeffectcapture.html
+			# https://docs.godotengine.org/en/stable/classes/class_audiostreamwav.html
+			# https://docs.godotengine.org/en/stable/classes/class_audioeffectrecord.html#class-audioeffectrecord
+
+	# this specific part saves to a project file 
+	if Input.is_action_just_pressed("SaveAction") && inMenu == false:
+		inSavingMenu = true
+		inMenu = true
+		
+	if inSavingMenu == true:
+		# lets u enter a file to save (for saving the project as a project file)
+		if Input.is_action_pressed("EnterAction") && isSaving == false:
+			get_node("ProjectSave").grab_focus()
+			# this determines what type of file u are trying to save to
+			# where true means u are saving the project file ...
+			saveFileType = 0
+			# ~ this lets u use enter now as a button for entering
+			# the name, and not for deciding the file type, maybe
+			# consider using a different input to check for, for both
+			# (will prob do anyways when more file types are added, but since
+			# its two now this is okay)
+			isSaving = true
+		# ... lets u save the project/record it as a wav ...
+		if Input.is_action_just_pressed("RecordAction") && isSaving == false:
+			# ... and for wavs, this var gets set to false (lets the program
+			# know which saving functions to go thru as these are two different
+			# file types)
+			saveFileType = 1
+			# same reason as above, makes it so when u press enter to enter
+			# the name of the file it doens't also change which file its being
+			# saved to
+			isSaving = true
+			
+			recordToFile = AudioServer.get_bus_effect(masterBus,0)
+			PlayingInProgress = true
+			print(recordToFile)
+			recordToFile.set_recording_active(true)	
+		# pressing exit stops the wav recording and you can enter in 
+		# a file name to save it ... ~ [feature] want to eventually make it so combing
+		# through and recording audio is an option, but also want to 
+		# make it so you can just write to a file without having to iterate through
+		# the audio and instead just have the code iterate through the
+		# notes (which would b much faster, but also idk how hard so this
+		# one is kinda on the backburner rn aside from doing research)
+		if Input.is_action_just_pressed("ExitAction") && (isSaving == true) && recordToFile != null:
+			saveToWav = recordToFile.get_recording()
+			recordToFile.set_recording_active(false)	
+			PlayingInProgress = false	
+			_AudioStreamPlayer.set_stream(saveToWav)
+			isSaving = true
+			get_node("ProjectSave").grab_focus()
+			
+			
+	# ... after typing in the name of the wav and pressing enter the
+	# file is saved (this is for wav files)
+	if saveFileType == 1 && isSaving == true && $ProjectSave.text != "" && Input.is_action_just_pressed("EnterAction"):
+		saveToWav.save_to_wav($ProjectSave.text)
+		isSaving = false
+		inSavingMenu = false
+		inMenu = false		
+		$ProjectSave.clear()
+		print("save to wav")
+
+	# after typing in the name of the wav and pressing enter the
+	# file is saved (this is for project files) ~ main thing to
+	# note is that the file extension can be whatever, but want something
+	# that ties into the name of the program (ig since this is opensource
+	# someone could just rename it to some extent, but I'd like for there
+	# to be some organizing, rn it just saves it to whatever you type in)
+	if saveFileType == 0 && inSavingMenu == true && $ProjectSave.text != "" && Input.is_action_just_pressed("EnterAction"):
+		fileSave()
 
 
 
@@ -1309,10 +1341,11 @@ func _process(delta):
 				queue_redraw()
 			
 		# choosing the music instrument file (mp3)	
-		if Input.is_key_pressed(KEY_ENTER):		
+		if Input.is_action_just_pressed("EnterAction"):		
 			tracks[currentTrack] = $TrackInstrument.text
 			shiftingTracks = false	
 			searchForStrument = false
+			inMenu = false
 			
 			# this switches the instrument for every note in the track
 			for child in get_parent().get_children():
@@ -1324,7 +1357,8 @@ func _process(delta):
 		# close out of the shifting menu
 		if Input.is_action_just_pressed("ExitAction"):	
 			shiftingTracks = false	
-			searchForStrument = false						
+			searchForStrument = false	
+			inMenu = false					
 
 
 # *select
@@ -1349,7 +1383,7 @@ func _process(delta):
 		
 		
 		# this is for selecting individual notes
-		if Input.is_action_just_pressed("LeftClick") && get_global_mouse_position().y < -60:
+		if Input.is_action_just_pressed("LeftClick") && get_global_mouse_position().y < 0:
 			# this lets you select new notes
 			selNotes.clear()
 			StartXSelectCorner = get_global_mouse_position().x
@@ -1519,114 +1553,114 @@ func _process(delta):
 	# if your not in a menu then pressing different buttons will change
 	# the selected notes n stuff		
 			# moves the selected notes to the left
-		if adjustingSelector == false:
-			if Input.is_action_pressed("LeftAction"):
-					for i in range(selNotes.size()):
-						selNotes[i].summonedX -= 1
-			# same but for the right
-			if Input.is_action_pressed("RightAction"):
-					for i in range(selNotes.size()):
-						selNotes[i].summonedX += 1
-			# this moves selected notes up
-			if Input.is_action_just_pressed("UpAction"):
-					for i in range(selNotes.size()):
-						selNotes[i].pitch -= 1	
-						selNotes[i].pitchSetChek = false
-			# same for down
-			if Input.is_action_just_pressed("DownAction"):
-					for i in range(selNotes.size()):
-						selNotes[i].pitch += 1	
-						selNotes[i].pitchSetChek = false
+		if inMenu == false:
+			if adjustingSelector == false:
+				if Input.is_action_pressed("LeftAction"):
+						for i in range(selNotes.size()):
+							selNotes[i].summonedX -= 1
+				# same but for the right
+				if Input.is_action_pressed("RightAction"):
+						for i in range(selNotes.size()):
+							selNotes[i].summonedX += 1
+				# this moves selected notes up
+				if Input.is_action_just_pressed("UpAction"):
+						for i in range(selNotes.size()):
+							selNotes[i].pitch -= 1	
+							selNotes[i].pitchSetChek = false
+				# same for down
+				if Input.is_action_just_pressed("DownAction"):
+						for i in range(selNotes.size()):
+							selNotes[i].pitch += 1	
+							selNotes[i].pitchSetChek = false
 
 
-			# this resizes the notes (position still needs to be readjusted tho fyi)
-			if Input.is_action_just_pressed("DecSizeAction"):
-				for i in range(selNotes.size()):
-					if selNotes[i].track == currentTrack:
-						selNotes[i].length -= 1
-						
-			if Input.is_action_just_pressed("IncSizeAction"):
-				for i in range(selNotes.size()):
-					if selNotes[i].track == currentTrack:
-						selNotes[i].length += 1					
-			
-			# this creates a copy of the selected notes on top of the current
-			# selected ones (the copied notes are not apart of the selected ones)
-			if Input.is_action_just_pressed("CopyAction"):
-				for i in range(selNotes.size()):
-					if selNotes[i] != null:	
-						selNotes[i]._clone()
+				# this resizes the notes (position still needs to be readjusted tho fyi)
+				if Input.is_action_just_pressed("DecSizeAction"):
+					for i in range(selNotes.size()):
+						if selNotes[i].track == currentTrack:
+							selNotes[i].length -= 1
+							
+				if Input.is_action_just_pressed("IncSizeAction"):
+					for i in range(selNotes.size()):
+						if selNotes[i].track == currentTrack:
+							selNotes[i].length += 1					
+				
+				# this creates a copy of the selected notes on top of the current
+				# selected ones (the copied notes are not apart of the selected ones)
+				if Input.is_action_just_pressed("CopyAction"):
+					for i in range(selNotes.size()):
+						if selNotes[i] != null:	
+							selNotes[i]._clone()
 
-			# This increases the selected note's individual dynamics (volume)
-			# U key
-			if Input.is_action_just_pressed("ForteAction"):					
-				for i in range(selNotes.size()):
-					if selNotes[i] != null:	
-						selNotes[i].indivol += 0.1
-						selNotes[i].pitchSetChek = false
-						
-			# This decreases the selected note's individual dynamics (volume)
-			# Y key
-			if Input.is_action_just_pressed("PianoAction"):					
-				for i in range(selNotes.size()):
-					if selNotes[i] != null:	
-						selNotes[i].indivol -= 0.1
-						selNotes[i].pitchSetChek = false		
-						
-			# this moves the selected notes to the track above	
-			# O key	
-			if Input.is_action_just_pressed("trackUpAction"):
-				var movetoTrack = 0
-				if currentTrack == tracks.size() - 1:
-					movetoTrack = 0
-				else:
-					movetoTrack = currentTrack + 1
+				# This increases the selected note's individual dynamics (volume)
+				# U key
+				if Input.is_action_just_pressed("ForteAction"):					
+					for i in range(selNotes.size()):
+						if selNotes[i] != null:	
+							selNotes[i].indivol += 0.1
+							selNotes[i].pitchSetChek = false
+							
+				# This decreases the selected note's individual dynamics (volume)
+				# Y key
+				if Input.is_action_just_pressed("PianoAction"):					
+					for i in range(selNotes.size()):
+						if selNotes[i] != null:	
+							selNotes[i].indivol -= 0.1
+							selNotes[i].pitchSetChek = false		
+							
+				# this moves the selected notes to the track above	
+				# O key	
+				if Input.is_action_just_pressed("trackUpAction"):
+					var movetoTrack = 0
+					if currentTrack == tracks.size() - 1:
+						movetoTrack = 0
+					else:
+						movetoTrack = currentTrack + 1
+										
+					for i in range(selNotes.size()):
+						if selNotes[i] != null:	
+							selNotes[i].track = movetoTrack
+							selNotes[i].volume = TrackVolume[movetoTrack]
+							selNotes[i].noteColor = Color(TrackColors[( movetoTrack * 3 ) % TrackColors.size()], TrackColors[( (movetoTrack * 3) + 1 ) % TrackColors.size()], TrackColors[( (movetoTrack * 3) + 2 ) % TrackColors.size()])
+							selNotes[i].Instrument = tracks[movetoTrack]
+							selNotes[i].pitchSetChek = false
+				
+				# this moves the selected notes to the track below	
+				# I Key (uh)	
+				if Input.is_action_just_pressed("trackDownAction"):
+					var movetoTrack = 0
+					if currentTrack == 0:
+						movetoTrack = tracks.size() - 1
+					else:
+						movetoTrack = currentTrack - 1
+										
+					for i in range(selNotes.size()):
+						if selNotes[i] != null:	
+							selNotes[i].track = movetoTrack
+							selNotes[i].volume = TrackVolume[movetoTrack]
+							selNotes[i].noteColor = Color(TrackColors[( movetoTrack * 3 ) % TrackColors.size()], TrackColors[( (movetoTrack * 3) + 1 ) % TrackColors.size()], TrackColors[( (movetoTrack * 3) + 2 ) % TrackColors.size()])
+							selNotes[i].Instrument = tracks[movetoTrack]
+							selNotes[i].pitchSetChek = false
+																	
+				# this deletes all selected notes
+				# *delete
+				if Input.is_key_pressed(KEY_DELETE):
+						for i in range(selNotes.size()):
+							if selNotes[i] != null:
+								selNotes[i].queue_free();	
+						selNotes.clear()		
 									
-				for i in range(selNotes.size()):
-					if selNotes[i] != null:	
-						selNotes[i].track = movetoTrack
-						selNotes[i].volume = TrackVolume[movetoTrack]
-						selNotes[i].noteColor = Color(TrackColors[( movetoTrack * 3 ) % TrackColors.size()], TrackColors[( (movetoTrack * 3) + 1 ) % TrackColors.size()], TrackColors[( (movetoTrack * 3) + 2 ) % TrackColors.size()])
-						selNotes[i].Instrument = tracks[movetoTrack]
-						selNotes[i].pitchSetChek = false
-			
-			# this moves the selected notes to the track below	
-			# I Key (uh)	
-			if Input.is_action_just_pressed("trackDownAction"):
-				var movetoTrack = 0
-				if currentTrack == 0:
-					movetoTrack = tracks.size() - 1
-				else:
-					movetoTrack = currentTrack - 1
-									
-				for i in range(selNotes.size()):
-					if selNotes[i] != null:	
-						selNotes[i].track = movetoTrack
-						selNotes[i].volume = TrackVolume[movetoTrack]
-						selNotes[i].noteColor = Color(TrackColors[( movetoTrack * 3 ) % TrackColors.size()], TrackColors[( (movetoTrack * 3) + 1 ) % TrackColors.size()], TrackColors[( (movetoTrack * 3) + 2 ) % TrackColors.size()])
-						selNotes[i].Instrument = tracks[movetoTrack]
-						selNotes[i].pitchSetChek = false
-																
-			# this deletes all selected notes
-			# *delete
-			if Input.is_key_pressed(KEY_DELETE):
-					for i in range(selNotes.size()):
-						if selNotes[i] != null:
-							selNotes[i].queue_free();	
-					selNotes.clear()		
-								
-			# not select but this toggles the transpose for the notes
-			if Input.is_action_just_pressed("TransposeAction"):
-				if transpose == 1:
-					transpose = 0
-				else:
-					transpose = 1
+				# not select but this toggles the transpose for the notes
+				if Input.is_action_just_pressed("TransposeAction"):
+					if transpose == 1:
+						transpose = 0
+					else:
+						transpose = 1
+						
+				# if ur in no menu, pressing 7 takes u to the start
+				if Input.is_action_just_pressed("ReturnAction"):# && PlayingInProgress == false && RecordingInProgress == false && shiftingTracks == false:
+					position.x = 0
 
-
-	# ~ [bug] one bug to patch whith this is when u use the selector after playing
-	# a bit it becomes offset and thats no good (also consider adding
-	# a way to change the length of a note that has been selected thats 
-	# semi important, but tbf not necessarily necessary rn)
 				
 # *Play *PlayMusic * playing * play *playing * playMusic *play music * play music
 	
@@ -1655,9 +1689,7 @@ func _process(delta):
 		$AnimatedSprite2D.play("idle")
 		# uncomment line above and use enter to playback
 	
-	# if ur in no menu, pressing 7 takes u to the start
-	if Input.is_action_just_pressed("ReturnAction"):# && PlayingInProgress == false && RecordingInProgress == false && shiftingTracks == false:
-		position.x = 0
+
 	# this lets you scroll a bit more (for skimming/debug)
 	# (but for mouse skimming)
 		
@@ -1699,4 +1731,3 @@ func _process(delta):
 
 	
 	pass
-	
