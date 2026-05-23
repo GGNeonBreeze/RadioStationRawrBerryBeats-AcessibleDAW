@@ -835,12 +835,12 @@ func fileLoad():
 		# these last statements finish loading the file
 		midiLoadCheck = true
 		# this unmutes the program to not make a crazy loud noise after
-		# the notes all get placed
+		# the notes all get placed (and moves the playing bar juuust in case
+		# it were to play any of the loaded notess)
 		while position.x < deltarune:
 			position.x += 5000
-		
 		AudioServer.set_bus_mute(masterBus,false)
-		
+		position.x = 0
 		$MidiFile.clear()
 		
 		get_node("FocusReset").grab_focus();
