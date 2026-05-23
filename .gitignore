@@ -1,3 +1,3 @@
 *.import # ignores all imports (afaik Godot doesn't need this when push/pull from git)
 .godot/ # ignores the .godot folder (this should be automatically made if you load the project through the Godot program)
-#customAssets/ # ignores custom assets that you might have (if you want to push something and you have your own songs you don't want to put on the repo, put them in this folder, this is also where individaul settings preset files will go)
+customAssets/ # ignores custom assets that you might have (if you want to push something and you have your own songs you don't want to put on the repo, put them in this folder, this is also where individaul settings preset files will go)
