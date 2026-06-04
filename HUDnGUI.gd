@@ -407,6 +407,10 @@ func _ready():
 			# are defined below the on ready one here)
 			focusButton.button_down.connect(_on_gui_button_pressed.bind(actionShortcut))
 			focusButton.button_up.connect(_on_gui_button_released.bind(actionShortcut))
+			
+			# this sets the screen reader text for the focus button
+			focusButton.accessibility_description = str(actionShortcut) + " mapped to " + str(InputMap.action_get_events(actionShortcut)[0].as_text())
+			
 			# adds the button to the list of menu buttons so when
 			# drawing all of them the program knows which ones to 
 			# peak at (this first if checks if the key has an associated
