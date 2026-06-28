@@ -222,7 +222,8 @@ extends Area2D
 	"ReturnAction" : ["Assets/Sprites/IconSprites/return1.png", [0]] ,
 	"SwitchTrackAction" : ["Assets/Sprites/IconSprites/switchTracks.png", [0]] ,
 	"SelectAdjustAction" : ["Assets/Sprites/IconSprites/selectAll1.png", [0]] ,
-	"LoadAction" : ["Assets/Sprites/IconSprites/save.png", [0]] 
+	"LoadAction" : ["Assets/Sprites/IconSprites/save.png", [0]] ,
+	"TactileAction" : ["Assets/Sprites/IconSprites/invisiblegrapes.png", [0]] 
 }
 
 # the sprite (not the image file, but the data on what to draw for 
@@ -242,7 +243,7 @@ func _switch_menu():
 func _ready():
 	var keyDrawYOffset = 60
 	var keyDrawXOffset = 0
-	for ii in range(54):
+	for ii in range(55):
 		
 
 		
