@@ -111,10 +111,18 @@ scale = Vector2(1, 0.2)
 texture = ExtResource("9_25h5o")
 
 [node name="FocusReset" type="LineEdit" parent="PlayingNode" unique_id=1942059105]
-offset_left = -817.0
-offset_top = 415.0
-offset_right = -748.438
-offset_bottom = 446.0
+offset_left = 144.0
+offset_top = -229.0
+offset_right = 212.56201
+offset_bottom = -198.0
+accessibility_description = "you are now in the main menu, you can press/hold/toggle keys to play notes, this will create a note where the playing bar is currently located. You can also enter other menus here to adjust the settings/properties of the project."
+
+[node name="SubMenuScreenRead" type="LineEdit" parent="PlayingNode" unique_id=58802674]
+offset_left = 142.0
+offset_top = -175.0
+offset_right = 210.56201
+offset_bottom = -144.0
+editable = false
 
 [node name="EnterSelectDimensions" type="LineEdit" parent="PlayingNode" unique_id=1022224796]
 offset_left = -700.0

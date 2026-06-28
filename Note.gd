@@ -61,7 +61,13 @@ class_name NoteClass
 # starting from a specific position (more for backing tracks)
 @onready var realTimePos: bool = false
 
+# this keeps track of the playingbar
+@onready var playingBar = get_parent().get_node("PlayingNode");
 
+# this determines when to vibrate the device
+@onready var tactileTimeHigh = false
+# this determines how long to vibrate the device for (as a time high)
+@onready var timeHigh : float
 
 
 # Called when the node enters the scene tree for the first time.
@@ -252,7 +258,7 @@ func _process(delta):
 	# about the y ones, and it makes the notes have to load less (more optimizing yay)
 	# it also helps with repeating selected notes too
 	if canPlay == true :
-		var playingBar = get_parent().get_node("PlayingNode");
+		
 		
 		# if the note is not growing, wait for the playing bar (or replaying bar) to reach it before playing
 		if growing == false:
@@ -300,6 +306,11 @@ func _process(delta):
 					# bus since instruments and other effects are kinda universal (but that
 					# depends on if we are allowed to have one bus play multiple sfx at a time)
 					_AudioStreamPlayer.play(10)
+					# like the instance where pitch calc is calculated, there is
+					# a magic number here that assumes that the pitch is 440, but
+					# you can technically use an audio file where the pitch isn't
+					timeHigh = 1 / (440 * pitchCalc) / 2
+					$Timer.start(timeHigh)
 					NoteplayingToggle = true
 					queue_redraw()
 				else:
@@ -330,3 +341,13 @@ func _process(delta):
 
 
 	pass
+
+
+func _on_timer_timeout() -> void:
+	if playingBar.tactileSound == true && NoteplayingToggle == true:
+		if tactileTimeHigh == false:
+			tactileTimeHigh = true
+			Input.vibrate_handheld(timeHigh)
+			print("test")
+		else:
+			tactileTimeHigh = true

@@ -1,18 +1,22 @@
-[gd_scene load_steps=4 format=3 uid="uid://b4vhvu8e82v"]
+[gd_scene format=3 uid="uid://b4vhvu8e82v"]
 
 [ext_resource type="Script" uid="uid://c4ethfws0mpxj" path="res://Note.gd" id="1_872nq"]
-[ext_resource type="Texture2D" uid="uid://ds5askm0cgb4h" path="res://Assets/Sprites/IconSprites/MusicMakerNoteReal.png" id="2_6st8q"]
+[ext_resource type="Texture2D" uid="uid://bbqvl8j6jo0ix" path="res://Assets/Sprites/IconSprites/MusicMakerNoteReal.png" id="2_6st8q"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ewwcu"]
 size = Vector2(1, 5)
 
-[node name="Node2D" type="Area2D"]
+[node name="Node2D" type="Area2D" unique_id=677543564]
 script = ExtResource("1_872nq")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=179798087]
 shape = SubResource("RectangleShape2D_ewwcu")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=760474457]
 texture = ExtResource("2_6st8q")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=126025090]
+
+[node name="Timer" type="Timer" parent="." unique_id=250711674]
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
