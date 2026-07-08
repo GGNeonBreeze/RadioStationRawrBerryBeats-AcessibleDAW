@@ -305,11 +305,8 @@ func _input(musician_input):
 
 		# if u press the remapping actions button it puts you in the remapping menu
 		if Input.is_action_just_pressed("Remap") && inMenu == false:
-			$SubMenuScreenRead.accessibility_description = "you are now in the remap menu, actions:
-				iterate forward by pressing " + str(InputMap.action_get_events("LeftAction")[0].as_text()) + " or backward by pressing " + str(InputMap.action_get_events("RightAction")[0].as_text()) + " through the different actions you can remap.
-				press record, which is currently mapped to " + str(InputMap.action_get_events("RecordAction")[0].as_text()) + " or enter which is currently mapped to " + str(InputMap.action_get_events("EnterAction")[0].as_text()) + ", to select the action you want to remap.
-				After selecting an action, the next button you press will be remapped to the one you assigned it to.
-				Exit and return to the main menu by pressing " + str(InputMap.action_get_events("ExitAction")[0].as_text())
+			$SubMenuScreenRead.accessibility_description = "you are now in the remap menu, actions:iterate forward by pressing " + str(InputMap.action_get_events("LeftAction")[0].as_text()) + " or backward by pressing " + str(InputMap.action_get_events("RightAction")[0].as_text()) + " through the different actions you can remap. press record, which is currently mapped to " + str(InputMap.action_get_events("RecordAction")[0].as_text()) + " or enter which is currently mapped to " + str(InputMap.action_get_events("EnterAction")[0].as_text()) + ", to select the action you want to remap. After selecting an action, the next button you press will be remapped to the one you assigned it to. Exit and return to the main menu by pressing " + str(InputMap.action_get_events("ExitAction")[0].as_text())
+			$Instructions.text = $SubMenuScreenRead.accessibility_description
 			$SubMenuScreenRead.grab_focus()
 			remappingActions = true;
 			inMenu = true;
@@ -476,11 +473,8 @@ func returnToMainMenu():
 	# (wanna finish this up first since not all audio is 
 	# recorded for that and it takes up a lot more file space)
 	$FocusReset.clear()
-	$FocusReset.accessibility_description = toAddToDescription + "you are now in the main menu, you can press/hold/toggle keys to play notes, this will create a note where the playing bar is currently located.
-		You can also enter other menus here to adjust the settings/properties of the project. 
-		You can use " + str(InputMap.action_get_events("FocusAction")[0].as_text()) + " to iterate through the different actions 
-		and " + str(InputMap.action_get_events("EnterAction")[0].as_text()) + " to perform the action, or you can press the corresponding
-		keyboard key that they are mapped to"
+	$FocusReset.accessibility_description = toAddToDescription + "you are now in the main menu, you can press/hold/toggle keys to play notes, this will create a note where the playing bar is currently located. You can also enter other menus here to adjust the settings/properties of the project. You can use " + str(InputMap.action_get_events("FocusAction")[0].as_text()) + " to iterate through the different actions and " + str(InputMap.action_get_events("EnterAction")[0].as_text()) + " to perform the action, or you can press the corresponding keyboard key that they are mapped to"
+	$Instructions.text = $FocusReset.accessibility_description
 	$FocusReset.grab_focus()
 	toAddToDescription = ""		
 	pass
@@ -531,6 +525,8 @@ func fileLoad():
 				toAddToDescription = FileAsString + " File not found in customAssets directory"
 				returnToMainMenu()
 				$MidiFile.clear()
+				$MidiFile.position.x = -800
+				$MidiFile.position.y = -330	
 				pass				
 			
 
@@ -883,6 +879,8 @@ func fileLoad():
 		AudioServer.set_bus_mute(masterBus,false)
 		position.x = 0
 		$MidiFile.clear()
+		$MidiFile.position.x = -800
+		$MidiFile.position.y = -330	
 		toAddToDescription = "File Successfully Loaded"
 		returnToMainMenu()
 
@@ -1111,6 +1109,8 @@ func fileSave():
 		inSavingMenu = false
 		inMenu = false		
 		$ProjectSave.clear()
+		$ProjectSave.position.x = -800
+		$ProjectSave.position.y = -330	
 		print("savingArrayfinished saving")
 	
 	
@@ -1128,16 +1128,16 @@ func _process(delta):
 	if Input.is_action_just_pressed("LoadAction") && inMenu == false:
 		shiftingMidis = true
 		inMenu = true
-		$MidiFile.accessibility_description = "You are now in the load file menu, 
-			type the name of the file you wish to load up (the program currently works with midis (which are dot M I D files),
-			and radio station rawr berry beats projects (which are dot R S R B T Z files)). 
+		$MidiFile.accessibility_description = "You are now in the load file menu, type the name of the file you wish to load up (the program currently works with midis (which are dot M I D files), and radio station rawr berry beats projects (which are dot R S R B T Z files)). 
 			You can use control and V if it is copied to your clipboard. 
 			Make sure the file is in the customAssets folder before trying to load it. 
-			Once you have entered the name of the file press the enter action, which is currently mapped to" + str(InputMap.action_get_events("EnterAction")[0].as_text()) + " . 
+			Once you have entered the name of the file press the enter action, which is currently mapped to " + str(InputMap.action_get_events("EnterAction")[0].as_text()) + " . 
 			To exit this menu, You can press the exit action, which is currently mapped to " + str(InputMap.action_get_events("ExitAction")[0].as_text()) + " to exit the menu. 
 			After loading a file, wait until you hear the file has been loaded, before continuing to edit, as it may take a bit."
+		$Instructions.text = "You are now in the load file menu, type the name of the file you wish to load up (the program currently works with midis (which are .mid files), and radio station rawr berry beats projects (which are .rsrbtz files)). You can use control + V if it is copied to your clipboard. Make sure the file is in the customAssets folder before trying to load it. Once you have entered the name of the file press the enter action, which is currently mapped to " + str(InputMap.action_get_events("EnterAction")[0].as_text()) + " . To exit this menu, You can press the exit action, which is currently mapped to " + str(InputMap.action_get_events("ExitAction")[0].as_text()) + " to exit the menu. After loading a file, wait until you hear the file has been loaded, before continuing to edit, as it may take a bit."
 		$MidiFile.grab_focus()
-		
+		$MidiFile.position.x = 0
+		$MidiFile.position.y = 50
 		
 	# this lets you adjust the starting substring a bit cuz I'm unsure when some tracks
 	# start exactly
@@ -1147,6 +1147,8 @@ func _process(delta):
 			shiftingMidis = false
 			inMenu = false
 			$MidiFile.clear()
+			$MidiFile.position.x = -800
+			$MidiFile.position.y = -330	
 			$FocusReset.grab_focus()
 
 	# when you have typed in the midi file it gets loaded
@@ -1246,7 +1248,12 @@ func _process(delta):
 		$SubMenuScreenRead.accessibility_description = "You are now in the save file menu,
 			press " + str(InputMap.action_get_events("EnterAction")[0].as_text()) + " to save the file as a rawr berry beats project you wish to edit later
 			or press " + str(InputMap.action_get_events("RecordAction")[0].as_text()) + " to go through the process of recording and exporting the track
-			as a wav file. press " + str(InputMap.action_get_events("ExitAction")[0].as_text()) + " to return to the main menu"
+			as a w a v file. press " + str(InputMap.action_get_events("ExitAction")[0].as_text()) + " to return to the main menu"
+		$Instructions.text = "You are now in the save file menu,
+			press " + str(InputMap.action_get_events("EnterAction")[0].as_text()) + " to save the file as a rawr berry beats project you wish to edit later
+			or press " + str(InputMap.action_get_events("RecordAction")[0].as_text()) + " to go through the process of recording and exporting the track
+			as a wav file. 
+			press " + str(InputMap.action_get_events("ExitAction")[0].as_text()) + " to return to the main menu"
 		$SubMenuScreenRead.grab_focus()
 		inSavingMenu = true
 		inMenu = true
@@ -1254,11 +1261,11 @@ func _process(delta):
 	if inSavingMenu == true:
 		# lets u enter a file to save (for saving the project as a project file)
 		if Input.is_action_pressed("EnterAction") && isSaving == false:
-			$ProjectSave.accessibility_description = "I'd reccomend making backup files (by making copies of the projects you are working on) for the time being as the program is experimental,
-				and a little early so in case something gets corrupted, you can have some progress saved. Otherwise, type the name of the file you wish to save to, and press enter
-				to save it, you need to wait until you hear the file has finished saving before editing again"
+			$ProjectSave.accessibility_description = "I'd reccomend making backup files (by making copies of the projects you are working on) for the time being as the program is experimental, and a little early so in case something gets corrupted, you can have some progress saved. Otherwise, type the name of the file you wish to save to, and press enter to save it, you need to wait until you hear the file has finished saving before editing again"
+			$Instructions.text = $ProjectSave.accessibility_description
 			$ProjectSave.grab_focus()
-			
+			$ProjectSave.position.x = 0
+			$ProjectSave.position.y = 50	
 			
 			# this determines what type of file u are trying to save to
 			# where true means u are saving the project file ...
@@ -1271,16 +1278,15 @@ func _process(delta):
 			isSaving = true
 		# ... lets u save the project/record it as a wav ...
 		if Input.is_action_just_pressed("RecordAction") && isSaving == false:
-			$ProjectSave.accessibility_description = "right now, in this early build of the program, 
-				the method for saving the project as a dot W A V file is done by having the program record and save it's own audio. 
-				Right now the track is playing from where the playing bar was at and will record the audio until 
-				you press " + str(InputMap.action_get_events("ExitAction")[0].as_text()) + " button. After you do, then you can enter 
-				a name for the track and it will be saved as a dot W A V file in the customAssets folder. "
+			$ProjectSave.accessibility_description = "right now, in this early build of the program, the method for saving the project as a dot W A V file is done by having the program record and save it's own audio. Right now the track is playing from where the playing bar was at and will record the audio until you press " + str(InputMap.action_get_events("ExitAction")[0].as_text()) + " button. After you do, then you can enter a name for the track and it will be saved as a dot W A V file in the customAssets folder. "
 				# [feature] TODO, make it so you are automatically prompted to save as a wav
 				# after the last note is recorded (even tho this method of recording might not
 				# be the only option, it makes it easier for now)
 				# By default, it will automatically stop a couple seconds after the last note in the track has finished playing."
+			$Instructions.text = $ProjectSave.accessibility_description
 			$ProjectSave.grab_focus()
+			$ProjectSave.position.x = 0
+			$ProjectSave.position.y = 50	
 			# ... and for wavs, this var gets set to false (lets the program
 			# know which saving functions to go thru as these are two different
 			# file types)
@@ -1308,7 +1314,10 @@ func _process(delta):
 			_AudioStreamPlayer.set_stream(saveToWav)
 			isSaving = true
 			$ProjectSave.accessibility_description = "type the name that you would like to save the audio file as."
+			$Instructions.text = $ProjectSave.accessibility_description
 			$ProjectSave.grab_focus()
+			$ProjectSave.position.x = 0
+			$ProjectSave.position.y = 50	
 			
 	
 			
@@ -1321,6 +1330,8 @@ func _process(delta):
 		inSavingMenu = false
 		inMenu = false		
 		$ProjectSave.clear()
+		$ProjectSave.position.x = -800
+		$ProjectSave.position.y = -330	
 		print("save to wav")
 		# returns to the main menu after successfully saving
 		toAddToDescription =  "the " + $ProjectSave.text + "file has been saved in the customAssets directory"
@@ -1530,6 +1541,8 @@ func _process(delta):
 			inMenu = true
 			get_node("MoveTo").clear();
 			get_node("MoveTo").grab_focus();
+			$MoveTo.position.x = 0
+			$MoveTo.position.y = 50
 			# calls the narration function (check the NarrationAudioPlayer
 			# for what each of these vals represent)
 			NarrationAudioPlayer.nextClipIndex = 0
@@ -1550,7 +1563,8 @@ func _process(delta):
 				# focus reset is just an obj that grabs focus so u can reset it
 				# if you switch to another text box
 					get_node("FocusReset").grab_focus();
-			
+					$MoveTo.position.x = -800
+					$MoveTo.position.y = -330		
 		# these specfiically are for the finer tuning changes, but you can change
 		# the positions quicker (by typing in values) with quick adjust
 		if adjustingSelector == true:
@@ -1812,6 +1826,11 @@ func _process(delta):
 		
 	# this moves the camera to follow the cursor
 	_Camera.position.x = position.x
+	
+	# the instruction label disapears for the main menu if 
+	# you press any button
+	if inMenu == false && ($FocusReset.has_focus() == false):
+		$Instructions.text = ""
 	
 	# if escape is pressed at any point it moves the
 	# focus off of the current button

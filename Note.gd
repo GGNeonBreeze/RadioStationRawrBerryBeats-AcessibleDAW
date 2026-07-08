@@ -349,6 +349,6 @@ func _on_timer_timeout() -> void:
 		if tactileTimeHigh == false:
 			tactileTimeHigh = true
 			Input.vibrate_handheld(100000 * timeHigh)
-			print(timeHigh)
+			#print(timeHigh)
 		else:
 			tactileTimeHigh = false

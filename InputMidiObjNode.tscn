@@ -37,15 +37,20 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xs51f"]
 size = Vector2(1, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_xs51f"]
+line_spacing = 4.0
+font_size = 32
+font_color = Color(0, 0, 0, 1)
+
 [node name="Node2D" type="Node2D" unique_id=1798926040]
 
 [node name="PlayingNode" type="Area2D" parent="." unique_id=1896898172]
 script = ExtResource("1_4e170")
 
 [node name="MoveTo" type="LineEdit" parent="PlayingNode" unique_id=716200969]
-offset_left = -700.0
+offset_left = -827.0
 offset_top = -210.0
-offset_right = -631.438
+offset_right = -758.438
 offset_bottom = -179.0
 focus_next = NodePath("../TrackInstrument")
 metadata/_edit_use_anchors_ = true
@@ -62,9 +67,9 @@ zoom = Vector2(0.8, 0.8)
 script = ExtResource("2_11vck")
 
 [node name="TrackInstrument" type="LineEdit" parent="PlayingNode" unique_id=637784771]
-offset_left = -700.0
+offset_left = -827.0
 offset_top = -270.0
-offset_right = -631.438
+offset_right = -758.438
 offset_bottom = -239.0
 focus_next = NodePath("../MidiFile")
 
@@ -79,23 +84,23 @@ sprite_frames = SubResource("SpriteFrames_6sbir")
 animation = &"idle"
 
 [node name="MidiFile" type="LineEdit" parent="PlayingNode" unique_id=958040720]
-offset_left = -700.0
+offset_left = -827.0
 offset_top = -330.0
-offset_right = -631.438
+offset_right = -758.438
 offset_bottom = -299.0
 focus_next = NodePath("../ProjectSave")
 
 [node name="ProjectSave" type="LineEdit" parent="PlayingNode" unique_id=1752251988]
-offset_left = -700.0
+offset_left = -827.0
 offset_top = -390.0
-offset_right = -631.438
+offset_right = -758.438
 offset_bottom = -359.0
 focus_next = NodePath("../TrackColor")
 
 [node name="TrackColor" type="LineEdit" parent="PlayingNode" unique_id=2051422283]
-offset_left = -700.0
+offset_left = -827.0
 offset_top = -150.0
-offset_right = -631.438
+offset_right = -758.438
 offset_bottom = -119.0
 focus_next = NodePath("../MoveTo")
 
@@ -111,24 +116,32 @@ scale = Vector2(1, 0.2)
 texture = ExtResource("9_25h5o")
 
 [node name="FocusReset" type="LineEdit" parent="PlayingNode" unique_id=1942059105]
-offset_left = 144.0
-offset_top = -229.0
-offset_right = 212.56201
-offset_bottom = -198.0
+offset_left = 759.0
+offset_top = -224.0
+offset_right = 827.562
+offset_bottom = -193.0
 accessibility_description = "you are now in the main menu, you can press/hold/toggle keys to play notes, this will create a note where the playing bar is currently located. You can also enter other menus here to adjust the settings/properties of the project."
 
 [node name="SubMenuScreenRead" type="LineEdit" parent="PlayingNode" unique_id=58802674]
-offset_left = 142.0
-offset_top = -175.0
-offset_right = 210.56201
-offset_bottom = -144.0
+offset_left = 757.0
+offset_top = -170.0
+offset_right = 825.562
+offset_bottom = -139.0
 editable = false
 
 [node name="EnterSelectDimensions" type="LineEdit" parent="PlayingNode" unique_id=1022224796]
-offset_left = -700.0
+offset_left = -827.0
 offset_top = -90.0
-offset_right = -631.438
+offset_right = -758.438
 offset_bottom = -59.0
+
+[node name="Instructions" type="Label" parent="PlayingNode" unique_id=6547973]
+offset_left = -683.0
+offset_top = -362.0
+offset_right = 678.0
+offset_bottom = -296.0
+label_settings = SubResource("LabelSettings_xs51f")
+autowrap_mode = 2
 
 [node name="HUDnGUI" type="Area2D" parent="." unique_id=700879356]
 position = Vector2(0, -0.035)
