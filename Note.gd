@@ -310,7 +310,7 @@ func _process(delta):
 					# a magic number here that assumes that the pitch is 440, but
 					# you can technically use an audio file where the pitch isn't
 					timeHigh = pitchCalc / (440) / 2
-					print(timeHigh)
+					#print(timeHigh)
 					$Timer.start(timeHigh)
 					NoteplayingToggle = true
 					queue_redraw()
@@ -348,7 +348,10 @@ func _on_timer_timeout() -> void:
 	if playingBar.tactileSound == true && NoteplayingToggle == true:
 		if tactileTimeHigh == false:
 			tactileTimeHigh = true
-			Input.vibrate_handheld(100000 * timeHigh)
+			playingBar.vibrationAdd(timeHigh,0.3)
 			#print(timeHigh)
 		else:
 			tactileTimeHigh = false
+			playingBar.vibrationSub(0.3)
+	else:
+		$Timer.stop()

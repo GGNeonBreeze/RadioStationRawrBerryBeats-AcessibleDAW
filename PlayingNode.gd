@@ -215,6 +215,8 @@ func _ready():
 # this determines if the device (andriod only for now) should vibrate
 # as notes are being played
 @onready var tactileSound = false
+# this determines the amplitude to vibrate the device at
+@onready var vibroAmp = 0
 # this bool determines if you are inputing values for the quick nav
 @onready var quickNav : bool = false;
 # this is used for a debug thing for printing the keys for assigning them
@@ -479,7 +481,13 @@ func returnToMainMenu():
 	toAddToDescription = ""		
 	pass
 
-	
+	# this controls the handheld vibration for mobile
+func vibrationAdd(timeHigh, amplitude):
+	vibroAmp += amplitude
+	Input.vibrate_handheld(100000 * timeHigh,vibroAmp)
+func vibrationSub(amplitude):
+	vibroAmp -= amplitude
+
 	# *fileRead *file *read *Read *load * load * read * Read	
 func fileLoad():
 		# big ideas with this is it lets the program read both midi files and
@@ -1831,6 +1839,7 @@ func _process(delta):
 	# you press any button
 	if inMenu == false && ($FocusReset.has_focus() == false):
 		$Instructions.text = ""
+
 	
 	# if escape is pressed at any point it moves the
 	# focus off of the current button
@@ -1840,8 +1849,9 @@ func _process(delta):
 		# the escape action, then the main menu script is read
 		if inMenu == false:
 			returnToMainMenu()
+			
+			
 	# moved playing stuff to the Note obj instead
-
 	queue_redraw()
 
 	
