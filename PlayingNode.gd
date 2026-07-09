@@ -484,7 +484,7 @@ func returnToMainMenu():
 	# this controls the handheld vibration for mobile
 func vibrationAdd(timeHigh, amplitude):
 	vibroAmp += amplitude
-	Input.vibrate_handheld(100000 * timeHigh,vibroAmp)
+	Input.vibrate_handheld(10000 * timeHigh,vibroAmp)
 func vibrationSub(amplitude):
 	vibroAmp -= amplitude
 
